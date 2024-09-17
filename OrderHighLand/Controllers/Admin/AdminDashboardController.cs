@@ -4,7 +4,7 @@ using OrderHighLand.Service;
 
 namespace OrderHighLand.Controllers.Admin
 {
-    public class AdminDashboardController : Controller
+	public class AdminDashboardController : Controller
     {
 
 		public IActionResult Index()
