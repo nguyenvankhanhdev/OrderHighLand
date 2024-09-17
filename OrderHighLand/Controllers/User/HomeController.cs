@@ -19,8 +19,6 @@ namespace OrderHighLand.Controllers.User
 
         public async Task<IActionResult> Index()
         {
-           
-            
             return View();
         }
        

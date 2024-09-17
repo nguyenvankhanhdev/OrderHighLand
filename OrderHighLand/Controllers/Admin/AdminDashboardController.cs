@@ -6,12 +6,11 @@ namespace OrderHighLand.Controllers.Admin
 {
     public class AdminDashboardController : Controller
     {
-<<<<<<< Updated upstream
-        public IActionResult Index()
-        {
-            return View();
-        }
-=======
+
+		public IActionResult Index()
+		{
+			return View();
+		}
 		private readonly ILogger<HomeController> _logger;
 		private readonly ConnecNeo4J _connecNeo4J;
 
@@ -21,12 +20,6 @@ namespace OrderHighLand.Controllers.Admin
 			_connecNeo4J = neo4J;
 		}
 
-		public async Task<IActionResult> Index()
-		{
-			var customers = await _connecNeo4J.GetAllCustomersAsync();
-			ViewBag.Customers = customers;
-			return View();
-		}
->>>>>>> Stashed changes
+		
     }
 }
