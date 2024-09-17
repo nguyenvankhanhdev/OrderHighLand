@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<ConnecNeo4J>(sp =>
-	new ConnecNeo4J("neo4j://localhost:7687", "neo4j", "12345678"));
+	new ConnecNeo4J("neo4j://localhost:7687", "neo4j", "123456789"));
 
 var app = builder.Build();
 
