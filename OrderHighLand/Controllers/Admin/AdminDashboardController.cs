@@ -6,10 +6,7 @@ namespace OrderHighLand.Controllers.Admin
     {
         public IActionResult Index()
         {
-            // tôi muốn return layout adminlayout
-           
             return View();
-
         }
     }
 }
