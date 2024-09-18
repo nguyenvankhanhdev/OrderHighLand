@@ -12,12 +12,11 @@ namespace OrderHighLand.Controllers.Admin
 			return View();
 		}
 		private readonly ILogger<HomeController> _logger;
-		private readonly ConnecNeo4J _connecNeo4J;
 
-		public AdminDashboardController(ILogger<HomeController> logger, ConnecNeo4J neo4J)
+		public AdminDashboardController(ILogger<HomeController> logger)
 		{
 			_logger = logger;
-			_connecNeo4J = neo4J;
+			
 		}
 
 		

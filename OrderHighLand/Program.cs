@@ -1,20 +1,26 @@
-using OrderHighLand.Service;
+﻿using OrderHighLand.Service;
+using Neo4j.Driver;
 
+using OrderHighLand.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<IDriver>(provider =>
+{
+	var uri = "bolt://localhost:7687"; // Replace with your Neo4j URI
+	var user = "neo4j"; // Replace with your Neo4j username
+	var password = "12345678"; // Replace with your Neo4j password
+	return GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
+});
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<ConnecNeo4J>(sp =>
-	new ConnecNeo4J("neo4j://localhost:7687", "neo4j", "123456789"));
+builder.Services.AddSingleton<ProductService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Home/Error");
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
 }
 
