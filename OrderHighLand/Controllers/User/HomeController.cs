@@ -18,6 +18,8 @@ namespace OrderHighLand.Controllers.User
 
         public async Task<IActionResult> Index()
         {
+            var products =await _connecNeo4J.getAllProducts();
+            ViewBag.Products = products;    
             return View();
         }
        
