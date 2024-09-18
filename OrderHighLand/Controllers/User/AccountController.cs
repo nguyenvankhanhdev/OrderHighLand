@@ -2,13 +2,9 @@
 
 namespace OrderHighLand.Controllers.User
 {
-    public class CartController : Controller
+    public class AccountController : Controller
     {
         public IActionResult Index()
-        {
-            return View();
-        }
-        public IActionResult CheckOut()
         {
             return View();
         }
