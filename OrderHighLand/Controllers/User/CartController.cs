@@ -8,5 +8,9 @@ namespace OrderHighLand.Controllers.User
         {
             return View();
         }
+        public IActionResult CheckOut()
+        {
+            return View();
+        }
     }
 }
