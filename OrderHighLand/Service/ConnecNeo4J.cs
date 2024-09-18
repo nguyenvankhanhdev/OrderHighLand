@@ -7,13 +7,10 @@ namespace OrderHighLand.Service
     {
         private readonly IDriver _driver;
 
-        public ConnecNeo4J(string uri, string user, string password)
+        public ConnecNeo4J(IDriver driver)
         {
-            _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
+            _driver = driver;
         }
-
-        // Start_Product
-        // Lấy tất cả các Product
         public async Task<List<Products>> getAllProducts()
         {
             var query = @"MATCH(s:Product)
