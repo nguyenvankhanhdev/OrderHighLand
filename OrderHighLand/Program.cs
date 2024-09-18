@@ -9,12 +9,13 @@ builder.Services.AddSingleton<IDriver>(provider =>
 {
 	var uri = "bolt://localhost:7687"; // Replace with your Neo4j URI
 	var user = "neo4j"; // Replace with your Neo4j username
-	var password = "12345678"; // Replace with your Neo4j password
+	var password = "123456789"; // Replace with your Neo4j password
 	return GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
 });
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<ProductService>();
+builder.Services.AddSingleton<ConnecNeo4J>();
 
 var app = builder.Build();
 
