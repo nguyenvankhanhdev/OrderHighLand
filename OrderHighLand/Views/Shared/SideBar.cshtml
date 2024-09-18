@@ -21,8 +21,10 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li class="{{ setActive(['admin.category.*']) }}">
-                        <a class="nav-link"
-                           href="">Category</a>
+                        <a class="nav-link" asp-controller="ASize" asp-action="GetSizes">Size</a>
+                    </li>
+                    <li class="{{ setActive(['admin.category.*']) }}">
+                        <a class="nav-link" asp-controller="ASize" asp-action="getMaxNode">MaxNode</a>
                     </li>
                     <li class="{{ setActive(['admin.sub-category.*']) }}">
                         <a class="nav-link"
@@ -50,10 +52,6 @@
                     <span>Manage Products</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li class="{{ setActive(['admin.brand.*']) }}">
-                        <a class="nav-link"
-                           href="">Brands</a>
-                    </li>
                     <li class="{{ setActive([
                             'admin.products.*',
                             'admin.products-image-gallery.*',
@@ -61,7 +59,7 @@
                             'admin.products-variant-item.*',
                             'admin.reviews.*',
                         ]) }}">
-                        <a class="nav-link" href="{{ route('admin.product.index') }}">Products</a>
+                        <a class="nav-link" asp-controller="AProduct" asp-action="GetAllProducts">Products</a>
                     </li>
                     <li class="{{ setActive(['admin.seller-products.*']) }}">
                         <a class="nav-link"

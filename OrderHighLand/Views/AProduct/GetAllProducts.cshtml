@@ -1,0 +1,36 @@
+﻿@model IEnumerable<OrderHighLand.Models.Products>
+@{
+	Layout = "_AdminLayout";
+}
+
+@* tạo 1 table cho tôi *@
+<table class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Product ID</th>
+			<th>Product Name</th>
+			<th>Category</th>
+			<th>Product Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.Id</td>
+				<td>@item.Name</td>
+				<td>@item.Cate_Id</td>
+
+				<td>
+					<a href="@Url.Action("EditProduct", "AProduct", new { id = item.Id })" class="btn btn-primary">Edit</a>
+					<a href="@Url.Action("DeleteProduct", "AProduct", new { id = item.Id })" class="btn btn-danger">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+
+
+
+
