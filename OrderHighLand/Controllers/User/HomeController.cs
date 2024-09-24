@@ -9,15 +9,18 @@ namespace OrderHighLand.Controllers.User
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ConnecNeo4J _connecNeo4J;
 
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ConnecNeo4J connecNeo4J)
         {
             _logger = logger;
+            _connecNeo4J = connecNeo4J;
         }
 
         public async Task<IActionResult> Index()
         {
+            var products =await _connecNeo4J.getAllProducts();
+            ViewBag.Products = products;    
             return View();
         }
        

@@ -17,14 +17,14 @@ namespace OrderHighLand.Controllers.Admin
 
 		public IActionResult GetSizes()
 		{
-			var sizes = new List<Size>();
+			var sizes = new List<Sizes>();
 
 			using (var session = _driver.AsyncSession())
 			{
 				var result = session.ExecuteReadAsync(async tx =>
 				{
 					var cursor = await tx.RunAsync("MATCH (s:Size) RETURN s.S_ID AS id, s.S_SIZE AS name, s.S_PRICE AS price");
-					return await cursor.ToListAsync(record => new Size
+					return await cursor.ToListAsync(record => new Sizes
 					{
 						ID = record["id"].As<int>(),
 						S_SIZE = record["name"].As<string>(),
@@ -43,7 +43,7 @@ namespace OrderHighLand.Controllers.Admin
 			return View();
 		}
 		[HttpPost]
-		public IActionResult Create(Size size)
+		public IActionResult Create(Sizes size)
 		{
 			
 			return RedirectToAction("Index");

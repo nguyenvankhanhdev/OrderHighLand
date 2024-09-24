@@ -75,48 +75,33 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="product-item">
-                            <div class="product-img img-zoom-effect">
-                                <a href="shop.html">
-                                    <img class="img-full"
-                                         src="assets/images/product/medium-size/new-product/product1.jpg"
-                                         alt="Product Images">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <a class="product-name pb-1" href="@Url.Action("Detail", "Product")">Fuel Injector</a>
-                                <div class="price-box">
-                                    <div class="price-box-holder">
-                                        <span>Price:</span>
-                                        <span class="new-price text-primary">$130.00</span>
-                                    </div>
+                    @foreach (var product in ViewBag.Products)
+                    {
+                        <div class="col-lg-3 col-md-6 ">
+                            <div class="product-item">
+                                <div class="product-img img-zoom-effect">
+                                    <a href="shop.html">
+                                        <img class="img-full"
+                                             src="~/imgs/@product.Image"
+                                             alt="Product Images">
+                                    </a>
                                 </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="product-item">
-                            <div class="product-img img-zoom-effect">
-                                <a href="shop.html">
-                                    <img class="img-full"
-                                         src="assets/images/product/medium-size/new-product/product1.jpg"
-                                         alt="Product Images">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <a class="product-name pb-1" href="single-product-sale.html">Nước ngọt tươi</a>
-                                <div class="price-box">
-                                    <div class="price-box-holder">
-                                        <span>Price:</span>
-                                        <span class="new-price text-primary">$130.00</span>
+                                <div class="product-content">
+                                    <a class="product-name pb-1" href="">@product.Name</a>
+                                    <div class="price-box">
+                                        <div class="price-box-holder">
+                                            <span>Price:</span>
+                                            <span class="new-price text-primary">$130.00</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-                    </div>
+                    }
+
+
+
+
 
                     <div class="col-lg-3 col-md-6 pt-7">
                         <div class="product-item">
@@ -215,6 +200,7 @@
         </div>
     </div>
 </div>
+            </div>
 
 <!-- Product Area End Here -->
 <!-- Begin Newsletter Area -->
@@ -224,7 +210,9 @@
 
             <div class="col-md-6 align-self-md-center pb-10 pb-md-0">
                 <div class="newsletter-content">
-                    <h4">SIGNATURE</h4>
+                    <h4>
+                        SIGNATURE
+                    </h4>
                     <h4>By The Coffee House</h4>
                     <p>Nơi cuộc hẹn tròn đầy với Cà phê đặc sản,Món ăn đa bản sắc và không gian cảm hứng.</p>
                     <br>
@@ -274,7 +262,7 @@
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>

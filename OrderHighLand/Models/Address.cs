@@ -1,6 +1,6 @@
 ﻿namespace OrderHighLand.Models
 {
-	public class Address
+	public class Addresses
 	{
 		public int ID { get; set; }
 		public string ADD_NAME { get; set; }
