@@ -1,7 +1,9 @@
-﻿@{
+﻿@model OrderHighLand.Models.Products
+@{
     ViewData["Title"] = "Home Page";
     var customers = ViewBag.Customers as List<string>;
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
 }
 <div class="slider-area">
 
@@ -87,7 +89,7 @@
                                     </a>
                                 </div>
                                 <div class="product-content">
-                                    <a class="product-name pb-1" href="">@product.Name</a>
+                                    <a class="product-name pb-1" href="/Product/Detail/@product.Slug">@product.Name</a>
                                     <div class="price-box">
                                         <div class="price-box-holder">
                                             <span>Price:</span>

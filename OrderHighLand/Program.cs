@@ -20,6 +20,9 @@ builder.Services.AddSingleton<ProductService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<ConnecNeo4J>();
 
+
+
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -27,6 +30,12 @@ if (!app.Environment.IsDevelopment())
 	app.UseExceptionHandler("/Home/Error");
 	app.UseHsts();
 }
+//app.MapControllerRoute(
+//    name: "productDetails",
+//    pattern: "Product/Detail/{slug}",
+//    defaults: new { controller = "Product", action = "Detail" }
+//);
+
 app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
