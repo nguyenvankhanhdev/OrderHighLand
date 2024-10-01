@@ -5,11 +5,43 @@ namespace OrderHighLand.Service
 {
     public class ConnecNeo4J : IDisposable
     {
+
         private readonly IDriver _driver;
 
         public ConnecNeo4J(IDriver driver)
         {
             _driver = driver;
+        }
+
+        public async Task<List<Size>> getAllSize()
+        {
+            var query = @"MATCH(s:Size)
+                  RETURN s.Id as Id, s.Size as Size, s.Price as Price";
+            try
+            {
+                using var session = _driver.AsyncSession();
+
+                var result = await session.RunAsync(query);
+                var sizes = new List<Size>();
+
+                await result.ForEachAsync(record =>
+                {
+                    var size = new Size
+                    {
+                        Id = record["Id"].As<int>(),
+                        S_Size = record["Size"].As<string>(),
+                        Price = record["Price"].As<int>()
+                    };
+                    sizes.Add(size);
+                });
+
+                return sizes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return new List<Size>();
+            }
         }
         public async Task<List<Products>> getAllProducts()
         {
@@ -28,7 +60,7 @@ namespace OrderHighLand.Service
                     var product = new Products
                     {
 
-                        Id = record["ID"].As<int>(),
+                        Id = record["Id"].As<int>(),
                         Name = record["Name"].As<string>(),
                         Image = record["Image"].As<string>(),
                         Slug = record["Slug"].As<string>(),

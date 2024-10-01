@@ -7,5 +7,6 @@
 		public string Status { get; set; }
 		public float TotalPrice { get; set; }
 		public int A_Id { get; set; }
+
 	}
 }

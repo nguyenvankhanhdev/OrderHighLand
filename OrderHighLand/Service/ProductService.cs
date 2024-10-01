@@ -3,6 +3,7 @@ using OrderHighLand.Models;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
+
 namespace OrderHighLand.Service
 {
 	public class ProductService
@@ -12,6 +13,8 @@ namespace OrderHighLand.Service
 		{
 			_driver = driver;
 		}
+
+		// Lấy tất cả các Product
 		public async Task<List<Products>> GetAllAsync()
 		{
 			var session = _driver.AsyncSession();
@@ -28,6 +31,7 @@ namespace OrderHighLand.Service
 						Name = node.Properties["Name"].As<string>(),
 						Slug = node.Properties["Slug"].As<string>(),
 						Image = node.Properties["Image"].As<string>(),
+						Type = node.Properties["Type"].As<string>(),		
 						Cate_Id = node.Properties["Cate_Id"].As<int>()
 					};
 				});
@@ -45,6 +49,115 @@ namespace OrderHighLand.Service
 			return name;
 		}
 
+        // Lấy 4 sản phẩm type Hot
+        public async Task<List<Products>> getFourHotProduct()
+		{
+            var query = @"MATCH (a:Product {Type:'Hot'}) 
+						RETURN a
+						LIMIT 4";
+            try
+            {
+                var session = _driver.AsyncSession();
+                var result = await session.RunAsync(query);
+
+                var products = new List<Products>();
+
+                await result.ForEachAsync(record =>
+                {
+                    var node = record["a"].As<INode>();
+                    var product = new Products
+                    {
+                        Id = node.Properties["Id"].As<int>(),
+                        Name = node.Properties["Name"].As<string>(),
+                        Image = node.Properties["Image"].As<string>(),
+                        Type = node.Properties["Type"].As<string>(),
+                        Cate_Id = node.Properties["Cate_Id"].As<int>(),
+                        Slug = node.Properties["Slug"].As<string>()
+                    };
+                    products.Add(product);
+                });
+                return products;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return new List<Products>();
+            }
+        }
+
+		// Lấy 2 sản phẩm type New
+		public async Task<List<Products>> getTwoNewProduct()
+		{
+			var query = @"MATCH (a:Product {Type:'New'}) 
+						RETURN a
+						LIMIT 2";
+			try
+			{
+                var session = _driver.AsyncSession();
+                var result = await session.RunAsync(query);
+
+                var products = new List<Products>();
+
+                await result.ForEachAsync(record =>
+                {
+                    var node = record["a"].As<INode>();
+                    var product = new Products
+                    {
+                        Id = node.Properties["Id"].As<int>(),
+                        Name = node.Properties["Name"].As<string>(),
+                        Image = node.Properties["Image"].As<string>(),
+                        Type = node.Properties["Type"].As<string>(),
+                        Cate_Id = node.Properties["Cate_Id"].As<int>(),
+                        Slug = node.Properties["Slug"].As<string>()
+                    };
+					products.Add(product);
+                });
+				return products;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				return new List<Products>();
+			}
+			
+
+
+		}	
+
+		public async Task<List<Products>> getProductByCateId(int cateId)
+		{
+			var query = @"MATCH (c:Product {Cate_Id: $cateId}) RETURN c";
+
+			try
+			{
+				var session = _driver.AsyncSession();
+				var result = await session.RunAsync(query, new { cateId });
+				var products = new List<Products>();
+				await result.ForEachAsync(record =>
+				{
+					var node = record["c"].As<INode>();
+					var product = new Products
+					{
+                        Id = node.Properties["Id"].As<int>(),
+                        Name = node.Properties["Name"].As<string>(),
+                        Image = node.Properties["Image"].As<string>(),
+                        Type = node.Properties["Type"].As<string>(),
+                        Cate_Id = node.Properties["Cate_Id"].As<int>(),
+                        Slug = node.Properties["Slug"].As<string>()
+                    };
+					products.Add(product);
+				});
+                return products;
+            }
+			catch(Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				return new List<Products>();
+			}
+
+		}
+
+		// Lấy Id lớn nhất của Product
 		private int getIdMax()
 		{
 			var session = _driver.AsyncSession();
@@ -69,9 +182,20 @@ namespace OrderHighLand.Service
 			{
 				var result = await session.ExecuteWriteAsync(async transaction =>
 				{
+
 					var newProductId = getIdMax() + 1;
 					var productSlug = GenerateSlug(product.Name);
 
+					var createQuery = @"
+					CREATE (p:Product {
+                    Id: $Id, 
+                    Name: $Name, 
+                    Slug: $Slug, 
+                    Image: $Image,
+					Type: $Type,
+                    Cate_Id: $Cate_Id 
+                })
+                RETURN p";
 					// Tạo sản phẩm mới
 					var createProductQuery = @"
 						CREATE (p:Product {
@@ -86,11 +210,20 @@ namespace OrderHighLand.Service
 
 					var createProductParams = new
 					{
+
 						PRO_ID = newProductId,
 						PRO_NAME = product.Name,
 						PRO_SLUG = productSlug,
 						PRO_IMAGE = product.Image,
-						CATE_ID= product.Cate_Id
+						CATE_ID= product.Cate_Id,
+
+                        Id = getIdMax() + 1, // Giả sử hàm getIdMax() trả về ID lớn nhất hiện có
+                        Name = product.Name,
+                        Slug = product.Slug,
+                        Image = product.Image,
+						Type= product.Type,
+                        Cate_Id = product.Cate_Id
+
 					};
 
 					var createResult = await transaction.RunAsync(createProductQuery, createProductParams);
@@ -104,6 +237,7 @@ namespace OrderHighLand.Service
 							Name = node.Properties["Name"].As<string>(),
 							Slug = node.Properties["Slug"].As<string>(),
 							Image = node.Properties["Image"].As<string>(),
+							Type = node.Properties["Type"].As<string>(),
 							Cate_Id = node.Properties["Cate_Id"].As<int>()
 						};
 					});
