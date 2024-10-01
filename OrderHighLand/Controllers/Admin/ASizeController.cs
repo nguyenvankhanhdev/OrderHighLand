@@ -8,45 +8,47 @@ namespace OrderHighLand.Controllers.Admin
 	public class ASizeController : Controller
 	{
 		private readonly IDriver _driver;
-		public ASizeController( IDriver driver )
+		private readonly SizeService _sizeService;
+		public ASizeController(IDriver driver, SizeService sizeService)
 		{
 			_driver = driver;
-	
+			_sizeService = sizeService;
 		}
-
-
-		public IActionResult GetSizes()
+		public async Task<IActionResult> Index()
 		{
-			var sizes = new List<Size>();
-
-			using (var session = _driver.AsyncSession())
-			{
-				var result = session.ExecuteReadAsync(async tx =>
-				{
-					var cursor = await tx.RunAsync("MATCH (s:Size) RETURN s.S_ID AS id, s.S_SIZE AS name, s.S_PRICE AS price");
-					return await cursor.ToListAsync(record => new Size
-					{
-						ID = record["id"].As<int>(),
-						S_SIZE = record["name"].As<string>(),
-						S_PRICE = record["price"].As<float>()
-					});
-				}).Result;
-
-				sizes.AddRange(result);
-			}
-
+			var sizes = await _sizeService.GetAllAsync();
 			return View(sizes);
 		}
 
-		public IActionResult Create()
+		public async Task<IActionResult> Edit(int id)
+		{
+			var size = await _sizeService.GetByIdAsync(id);
+			return View(size);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Edit(Sizes size, int id)
+		{
+			await _sizeService.UpdateAsync(size, id);
+			return RedirectToAction("Index");
+		}
+
+		public async Task<IActionResult> Create()
 		{
 			return View();
 		}
 		[HttpPost]
-		public IActionResult Create(Size size)
+		public async Task<IActionResult> Create(Sizes size)
 		{
-			
-			return RedirectToAction("Index");
+			await _sizeService.CreateAsync(size);
+			return Json(new { status = "success", message = "Size created successfully!" });
+
 		}
+
+		public async Task<IActionResult> Delete(int id)
+		{
+			await _sizeService.DeleteAsync(id);
+			return Json(new { status = "success", message = "Size deleted successfully!" });
+		}
+
 	}
 }
