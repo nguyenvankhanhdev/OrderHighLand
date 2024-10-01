@@ -206,12 +206,12 @@
                                                                         {
                                                                             if (!firstPriceDisplayed) // Chỉ hiển thị giá đầu tiên
                                                                             {
-                                                                                <span data-size="@proSize.Size.S_Size" id="ProSize_@proSize.Size.Id" class="new-price text-danger">Giá: @proSize.ProductVariant.Price đ</span>
+                                                                                <span data-size="@proSize.Size.Size" id="ProSize_@proSize.Size.Id" class="new-price text-danger">Giá: @proSize.ProductVariant.Price đ</span>
                                                                                 firstPriceDisplayed = true; // Đánh dấu đã hiển thị giá đầu tiên
                                                                             }
                                                                             else
                                                                             {
-                                                                                <span data-size="@proSize.Size.S_Size" id="ProSize_@proSize.Size.Id" class="new-price text-danger" style="display:none;">Giá: @proSize.ProductVariant.Price đ</span>
+                                                                                <span data-size="@proSize.Size.Size" id="ProSize_@proSize.Size.Id" class="new-price text-danger" style="display:none;">Giá: @proSize.ProductVariant.Price đ</span>
                                                                             }
                                                                         }
                                                                         
@@ -228,10 +228,10 @@
                                                                         {
                                                                             <div id="ProSize_@proSize.Size.Id" class="form-check">
                                                                                 <input class="form-check-input" type="checkbox" name="size"
-                                                                                       id="ProSize_@proSize.Size.Id" value="@proSize.Size.S_Size"
+                                                                                       id="ProSize_@proSize.Size.Id" value="@proSize.Size.Size"
                                                                                 @(isFirstSize ? "checked" : "") /> <!-- Đặt checked cho checkbox đầu tiên -->
                                                                                 <label class="form-check-label" for="Size_@proSize.Size.Id">
-                                                                                    @proSize.Size.S_Size
+                                                                                    @proSize.Size.Size
                                                                                 </label>
                                                                             </div>
 
