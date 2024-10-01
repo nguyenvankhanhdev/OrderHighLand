@@ -26,9 +26,9 @@ namespace OrderHighLand.Controllers.Admin
 					var cursor = await tx.RunAsync("MATCH (s:Size) RETURN s.S_ID AS id, s.S_SIZE AS name, s.S_PRICE AS price");
 					return await cursor.ToListAsync(record => new Size
 					{
-						ID = record["id"].As<int>(),
-						S_SIZE = record["name"].As<string>(),
-						S_PRICE = record["price"].As<float>()
+						Id = record["id"].As<int>(),
+						S_Size = record["name"].As<string>(),
+						Price = record["price"].As<float>()
 					});
 				}).Result;
 

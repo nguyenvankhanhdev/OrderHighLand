@@ -1,6 +1,6 @@
 ﻿using Neo4j.Driver;
 using OrderHighLand.Models;
-using Category = OrderHighLand.Models.Category;
+
 
 namespace OrderHighLand.Service
 {
@@ -11,6 +11,8 @@ namespace OrderHighLand.Service
 		{
 			_driver = driver;
 		}
+
+		// Lấy tất cả các Product
 		public async Task<List<Products>> GetAllAsync()
 		{
 			var session = _driver.AsyncSession();
@@ -23,10 +25,11 @@ namespace OrderHighLand.Service
 					var node = record["p"].As<INode>();
 					return new Products
 					{
-						Id = node.Properties["PRO_ID"].As<int>(),
-						Name = node.Properties["PRO_NAME"].As<string>(),
-						Slug = node.Properties["PRO_SLUG"].As<string>(),
-						Cate_Id = node.Properties["CATE_ID"].As<int>()
+						Id = node.Properties["Id"].As<int>(),
+						Name = node.Properties["Name"].As<string>(),
+						Slug = node.Properties["Slug"].As<string>(),
+						Type = node.Properties["Type"].As<string>(),		
+						Cate_Id = node.Properties["Cate_Id"].As<int>()
 					};
 				});
 				return products;
@@ -35,12 +38,121 @@ namespace OrderHighLand.Service
 			return result;
 		}
 
+        // Lấy 4 sản phẩm type Hot
+        public async Task<List<Products>> getFourHotProduct()
+		{
+            var query = @"MATCH (a:Product {Type:'Hot'}) 
+						RETURN a
+						LIMIT 4";
+            try
+            {
+                var session = _driver.AsyncSession();
+                var result = await session.RunAsync(query);
+
+                var products = new List<Products>();
+
+                await result.ForEachAsync(record =>
+                {
+                    var node = record["a"].As<INode>();
+                    var product = new Products
+                    {
+                        Id = node.Properties["Id"].As<int>(),
+                        Name = node.Properties["Name"].As<string>(),
+                        Image = node.Properties["Image"].As<string>(),
+                        Type = node.Properties["Type"].As<string>(),
+                        Cate_Id = node.Properties["Cate_Id"].As<int>(),
+                        Slug = node.Properties["Slug"].As<string>()
+                    };
+                    products.Add(product);
+                });
+                return products;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return new List<Products>();
+            }
+        }
+
+		// Lấy 2 sản phẩm type New
+		public async Task<List<Products>> getTwoNewProduct()
+		{
+			var query = @"MATCH (a:Product {Type:'New'}) 
+						RETURN a
+						LIMIT 2";
+			try
+			{
+                var session = _driver.AsyncSession();
+                var result = await session.RunAsync(query);
+
+                var products = new List<Products>();
+
+                await result.ForEachAsync(record =>
+                {
+                    var node = record["a"].As<INode>();
+                    var product = new Products
+                    {
+                        Id = node.Properties["Id"].As<int>(),
+                        Name = node.Properties["Name"].As<string>(),
+                        Image = node.Properties["Image"].As<string>(),
+                        Type = node.Properties["Type"].As<string>(),
+                        Cate_Id = node.Properties["Cate_Id"].As<int>(),
+                        Slug = node.Properties["Slug"].As<string>()
+                    };
+					products.Add(product);
+                });
+				return products;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				return new List<Products>();
+			}
+			
+
+
+		}	
+
+		public async Task<List<Products>> getProductByCateId(int cateId)
+		{
+			var query = @"MATCH (c:Product {Cate_Id: $cateId}) RETURN c";
+
+			try
+			{
+				var session = _driver.AsyncSession();
+				var result = await session.RunAsync(query, new { cateId });
+				var products = new List<Products>();
+				await result.ForEachAsync(record =>
+				{
+					var node = record["c"].As<INode>();
+					var product = new Products
+					{
+                        Id = node.Properties["Id"].As<int>(),
+                        Name = node.Properties["Name"].As<string>(),
+                        Image = node.Properties["Image"].As<string>(),
+                        Type = node.Properties["Type"].As<string>(),
+                        Cate_Id = node.Properties["Cate_Id"].As<int>(),
+                        Slug = node.Properties["Slug"].As<string>()
+                    };
+					products.Add(product);
+				});
+                return products;
+            }
+			catch(Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				return new List<Products>();
+			}
+
+		}
+
+		// Lấy Id lớn nhất của Product
 		private int getIdMax()
 		{
 			var session = _driver.AsyncSession();
 			var result = session.ExecuteReadAsync(async transaction =>
 			{
-				var readQuery = "MATCH (p:Product) RETURN max(p.PRO_ID) as max";
+				var readQuery = "MATCH (p:Product) RETURN max(p.Id) as max";
 				var readResult = await transaction.RunAsync(readQuery);
 				var products = await readResult.ToListAsync(record =>
 				{
@@ -62,22 +174,24 @@ namespace OrderHighLand.Service
 					// Truy vấn tạo node Product với các thuộc tính được truyền vào
 					var createQuery = @"
 					CREATE (p:Product {
-                    PRO_ID: $PRO_ID, 
-                    PRO_NAME: $PRO_NAME, 
-                    PRO_SLUG: $PRO_SLUG, 
-                    PRO_IMAGE: $PRO_IMAGE, 
-                    CATE_ID: $CATE_ID 
+                    Id: $Id, 
+                    Name: $Name, 
+                    Slug: $Slug, 
+                    Image: $Image,
+					Type: $Type,
+                    Cate_Id: $Cate_Id 
                 })
                 RETURN p";
 
 					// Tạo các tham số truy vấn
 					var createParams = new
 					{
-						PRO_ID = getIdMax() + 1, // Giả sử hàm getIdMax() trả về ID lớn nhất hiện có
-						PRO_NAME = product.Name,
-						PRO_SLUG = product.Slug,
-						PRO_IMAGE = product.Image,  // Assuming you have this property
-						CATE_ID = product.Cate_Id
+                        Id = getIdMax() + 1, // Giả sử hàm getIdMax() trả về ID lớn nhất hiện có
+                        Name = product.Name,
+                        Slug = product.Slug,
+                        Image = product.Image,
+						Type= product.Type,
+                        Cate_Id = product.Cate_Id
 					};
 
 					// Thực thi truy vấn và lấy kết quả
@@ -89,11 +203,12 @@ namespace OrderHighLand.Service
 						var node = record["p"].As<INode>();
 						return new Products
 						{
-							Id = node.Properties["PRO_ID"].As<int>(),
-							Name = node.Properties["PRO_NAME"].As<string>(),
-							Slug = node.Properties["PRO_SLUG"].As<string>(),
-							Image = node.Properties["PRO_IMAGE"].As<string>(),
-							Cate_Id = node.Properties["CATE_ID"].As<int>()
+							Id = node.Properties["Id"].As<int>(),
+							Name = node.Properties["Name"].As<string>(),
+							Slug = node.Properties["Slug"].As<string>(),
+							Image = node.Properties["Image"].As<string>(),
+							Type = node.Properties["Type"].As<string>(),
+							Cate_Id = node.Properties["Cate_Id"].As<int>()
 						};
 					});
 

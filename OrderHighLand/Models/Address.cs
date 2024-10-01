@@ -2,11 +2,11 @@
 {
 	public class Address
 	{
-		public int ID { get; set; }
-		public string ADD_NAME { get; set; }
-		public string ADD_ADDRESS { get; set; }
-		public string ADD_WARD { get; set; }
-		public string ADD_DISTRICT { get; set; }
+		public int Id { get; set; }
+		public string Name { get; set; }
+		public string Add_Address { get; set; }
+		public string Ward { get; set; }
+		public string District { get; set; }
 		public int A_ID { get; set; }
 	}
 }

@@ -12,10 +12,13 @@ builder.Services.AddSingleton<IDriver>(provider =>
 	var password = "123456789"; // Replace with your Neo4j password
 	return GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
 });
+
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<ConnecNeo4J>();
+builder.Services.AddSingleton<ProductVariantService>();
 
 var app = builder.Build();
 

@@ -5,9 +5,9 @@ namespace OrderHighLand.Models
 {
 	public class Size
 	{
-		public int ID { get; set; }
-		public string S_SIZE { get; set; }
-		public float S_PRICE { get; set; }
+		public int Id { get; set; }
+		public string S_Size { get; set; }
+		public float Price { get; set; }
 
 
 	}
