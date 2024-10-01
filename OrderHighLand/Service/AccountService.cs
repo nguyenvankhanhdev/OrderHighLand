@@ -24,11 +24,11 @@ namespace OrderHighLand.Service
 					var node = record["a"].As<INode>();
 					return new Accounts
 					{
-						Id = node.Properties["Id"].As<int>(),
-						Name = node.Properties["Name"].As<string>(),
-						Username = node.Properties["Username"].As<string>(),
-						Password = node.Properties["Password"].As<string>(),
-						Role_Id = node.Properties["Role"].As<int>(),
+						A_ID = node.Properties["Id"].As<int>(),
+						A_NAME = node.Properties["Name"].As<string>(),
+						A_EMAIL = node.Properties["Email"].As<string>(),
+						A_PASSWORD = node.Properties["Password"].As<string>(),
+						ROLE_ID = node.Properties["Role"].As<int>(),
 					};
 				});
 				return accounts;

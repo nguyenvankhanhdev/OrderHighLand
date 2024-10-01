@@ -2,10 +2,11 @@
 {
 	public class Accounts
 	{
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public string Password { get; set; }
-		public string Username { get; set; }
-		public int Role_Id { get; set; }
+		public int A_ID { get; set; }
+		public string A_NAME { get; set; }
+		public string A_PASSWORD { get; set; }
+		public string A_EMAIL { get; set; }
+		public int ROLE_ID { get; set; }
+
 	}
 }

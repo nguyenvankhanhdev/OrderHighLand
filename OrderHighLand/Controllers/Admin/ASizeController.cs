@@ -16,7 +16,24 @@ namespace OrderHighLand.Controllers.Admin
 		}
 		public async Task<IActionResult> Index()
 		{
-			var sizes = await _sizeService.GetAllAsync();
+
+			var sizes = new List<Sizes>();
+
+			using (var session = _driver.AsyncSession())
+			{
+				var result = session.ExecuteReadAsync(async tx =>
+				{
+					var cursor = await tx.RunAsync("MATCH (s:Size) RETURN s.Id AS id, s.Size AS name, s.Price AS price");
+					return await cursor.ToListAsync(record => new Sizes
+					{
+						Id = record["id"].As<int>(),
+						Size = record["name"].As<string>(),
+						Price = record["price"].As<float>()
+					});
+				}).Result;
+
+				sizes.AddRange(result);
+			}
 			return View(sizes);
 		}
 
@@ -37,7 +54,9 @@ namespace OrderHighLand.Controllers.Admin
 			return View();
 		}
 		[HttpPost]
+
 		public async Task<IActionResult> Create(Sizes size)
+
 		{
 			await _sizeService.CreateAsync(size);
 			return Json(new { status = "success", message = "Size created successfully!" });
