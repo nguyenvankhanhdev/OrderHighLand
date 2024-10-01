@@ -172,7 +172,6 @@ namespace OrderHighLand.Service
             {
                 var result = await session.ExecuteReadAsync(async transaction =>
                 {
-                    // Truy vấn lấy Product, ProductVariant và Sizes
                     var readQuery = @"
 MATCH (p:Product {Slug: $slug})
 OPTIONAL MATCH (p)<-[:VARIANT_OF]-(pv:ProductVariant)-[:HAS_SIZE]->(s:Size)
@@ -182,7 +181,6 @@ RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories
 
                     var cursor = await transaction.RunAsync(readQuery, new { slug });
 
-                    // Kiểm tra và lấy kết quả
                     if (await cursor.FetchAsync())
                     {
                         var record = cursor.Current;
@@ -191,7 +189,6 @@ RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories
                         var sizes = record["sizes"].As<List<INode>>();
                         var categories = record["categories"].As<List<INode>>();
 
-                        // Tạo đối tượng Product từ node product
                         var product = new Products
                         {
                             Id = (int)productNode["Id"].As<long>(),
@@ -199,7 +196,7 @@ RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories
                             Slug = productNode["Slug"].As<string>(),
                             Image = productNode["Image"].As<string>(),
                             Cate_Id = (int)productNode["Cate_Id"].As<long>(),
-                            // Liên kết ProductVariant
+
                             ProductVariants = variants.Select(v => new ProductVariant
                             {
                                 ID = (int)v["Id"].As<long>(),
@@ -208,7 +205,7 @@ RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories
                                 Quantity = (int)v["Quantity"].As<long>(),
                                 S_ID = (int)v["Size_Id"].As<long>()
                             }).ToList(),
-                            // Liên kết Sizes
+
                             Sizes = sizes.Select(s => new Sizes
                             {
                                 ID = (int)s["Id"].As<long>(),
