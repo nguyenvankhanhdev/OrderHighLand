@@ -14,7 +14,12 @@ builder.Services.AddSingleton<IDriver>(provider =>
 });
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
@@ -35,11 +40,6 @@ if (!app.Environment.IsDevelopment())
 	app.UseExceptionHandler("/Home/Error");
 	app.UseHsts();
 }
-//app.MapControllerRoute(
-//    name: "productDetails",
-//    pattern: "Product/Detail/{slug}",
-//    defaults: new { controller = "Product", action = "Detail" }
-//);
 
 app.UseSession();
 app.UseHttpsRedirection();

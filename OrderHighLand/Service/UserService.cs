@@ -21,7 +21,9 @@ namespace OrderHighLand.Service
                 {
                     var query = "MATCH (a:Account) RETURN max(a.Id) as maxId";
                     var maxResult = await transaction.RunAsync(query);
-                    var maxId = await maxResult.SingleAsync(record => record["maxId"].As<int>());
+
+                    var maxId = await maxResult.SingleAsync(record => record["maxId"].As<int?>() ?? 0);
+
                     return maxId;
                 });
                 return result;
@@ -31,6 +33,7 @@ namespace OrderHighLand.Service
                 await session.CloseAsync();
             }
         }
+
 
         public async Task<Accounts> GetUserByEmailAsync(string email)
         {
@@ -68,8 +71,6 @@ namespace OrderHighLand.Service
             }
         }
 
-
-
         public async Task<Accounts> RegisterAsync(Register model)
         {
             var session = _driver.AsyncSession();
@@ -86,8 +87,12 @@ namespace OrderHighLand.Service
                 Name: $A_NAME,    
                 Email: $A_EMAIL,   
                 Password: $A_PASSWORD,
-                Role_Id: 2  // Default to regular user role
-            }) RETURN a";
+                Role_Id: 2  // Mặc định với Role_Id là 2
+            })
+            WITH a
+            MATCH (r:Role {Id: a.Role_Id}) 
+            CREATE (a)-[:HAS_ROLE]->(r) 
+            RETURN a";
 
                     var createParams = new
                     {
@@ -121,6 +126,7 @@ namespace OrderHighLand.Service
                 await session.CloseAsync();
             }
         }
+
 
         public async Task<Accounts> LoginAsync(string email, string password)
         {
