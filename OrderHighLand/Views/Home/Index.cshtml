@@ -77,7 +77,7 @@
                             </div>
                         </div>
                     </div>
-                    @foreach (var product in ViewBag.Products)
+                    @foreach (var product in ViewBag.NewProducts)
                     {
                         <div class="col-lg-3 col-md-6 ">
                             <div class="product-item">
@@ -100,94 +100,41 @@
                             </div>
                         </div>
                     }
-
-
-
-
-
-                    <div class="col-lg-3 col-md-6 pt-7">
-                        <div class="product-item">
-                            <div class="product-img img-zoom-effect">
-                                <a href="shop.html">
-                                    <img class="img-full"
-                                         src="assets/images/product/medium-size/new-product/product3.jpg"
-                                         alt="Product Images">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <a class="product-name pb-1" href="shop.html">A/C Compressor</a>
-                                <div class="price-box">
-                                    <div class="price-box-holder">
-                                        <span>Price:</span>
-                                        <span class="new-price text-primary">$150.00</span>
-                                    </div>
-                                </div>
-
-                            </div>
+                    @if(ViewBag.NewProducts.Count == 1 )
+                    {
+                        <div class="col-lg-3 col-md-6 ">
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 pt-7">
-                        <div class="product-item">
-                            <div class="product-img img-zoom-effect">
-                                <a href="shop.html">
-                                    <img class="img-full"
-                                         src="assets/images/product/medium-size/new-product/product4.jpg"
-                                         alt="Product Images">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <a class="product-name pb-1" href="shop.html">Shock Absorbers</a>
-                                <div class="price-box">
-                                    <div class="price-box-holder">
-                                        <span>Price:</span>
-                                        <span class="new-price text-primary">$180.00</span>
-                                    </div>
-                                </div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 pt-7">
-                        <div class="product-item">
-                            <div class="product-img img-zoom-effect">
-                                <a href="shop.html">
-                                    <img class="img-full"
-                                         src="assets/images/product/medium-size/new-product/product5.jpg"
-                                         alt="Product Images">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <a class="product-name pb-1" href="shop.html">Catalytic Converter</a>
-                                <div class="price-box">
-                                    <div class="price-box-holder">
-                                        <span>Price:</span>
-                                        <span class="new-price text-primary">$200.00</span>
-                                    </div>
+                    }
+                    
+                    @foreach(var product in ViewBag.HotProducts)
+                    {
+                        <div class="col-lg-3 col-md-6 pt-7">
+                            <div class="product-item">
+                                <div class="product-img img-zoom-effect">
+                                    <a href="shop.html">
+                                        <img class="img-full"
+                                             src="~/imgs/@product.Image"
+                                             alt="Product Images">
+                                    </a>
                                 </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 pt-7">
-                        <div class="product-item">
-                            <div class="product-img img-zoom-effect">
-                                <a href="shop.html">
-                                    <img class="img-full"
-                                         src="assets/images/product/medium-size/new-product/product6.jpg"
-                                         alt="Product Images">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <a class="product-name pb-1" href="shop.html">Catalytic Converter</a>
-                                <div class="price-box">
-                                    <div class="price-box-holder">
-                                        <span>Price:</span>
-                                        <span class="new-price text-primary">$200.00</span>
+                                <div class="product-content">
+                                    <a class="product-name pb-1" href="">@product.Name</a>
+                                    <div class="price-box">
+                                        <div class="price-box-holder">
+                                            <span>Price:</span>
+                                            <span class="new-price text-primary">$150.00</span>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
+
+
+                    
+                   
                 </div>
             </div>
 

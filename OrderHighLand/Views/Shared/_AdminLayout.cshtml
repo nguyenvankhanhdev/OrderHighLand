@@ -86,14 +86,8 @@
 	<script src="/backend/assets/js/scripts.js"></script>
 	<script src="/backend/assets/js/custom.js"></script>
 
-	<script>
-		if ($errors -> any()) {
-			foreach($errors -> all() as $error){
+	@RenderSection("Scripts",required:false)
 
-				toastr.error("{{ $error }}")
-			}
-		}
-	</script>
 
 	<!-- Dynamic Delete alart -->
 
@@ -134,7 +128,9 @@
 										data.message,
 										'success'
 									)
-									window.location.reload();
+									 setTimeout(() => {
+                                        window.location.reload();
+                                   }, 1000);
 								} else if (data.status == 'error') {
 									Swal.fire(
 										'Cant Delete',

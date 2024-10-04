@@ -118,28 +118,10 @@
                             @foreach (var variant in Model.ProductVariants)
                             {
                                 <span class="new-price text-danger"> Price: @variant.Price</span>
-                            }              
+                            }
                         </div>
-                                <div class="d-flex justify-content-start gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="size" id="sizeS" value="S" required />
-                                        <label class="form-check-label" for="sizeS">
-                                            S
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="size" id="sizeM" value="M" required />
-                                        <label class="form-check-label" for="sizeM">
-                                            M
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="size" id="sizeL" value="L" required />
-                                        <label class="form-check-label" for="sizeL">
-                                            L
-                                        </label>
-                                    </div>
-                                </div>     
+
+
                         <div class="rating-box-wrap pb-9">
                             <div class="rating-box">
                                 <ul>
@@ -155,15 +137,7 @@
                             </div>
                         </div>
 
-                       @*  <div class="cart-plus-minus">
-                            <input class="cart-plus-minus-box" value="1" type="text">
-                            <div class="dec qtybutton">
-                                <i class="fa fa-minus"></i>
-                            </div>
-                            <div class="inc qtybutton">
-                                <i class="fa fa-plus"></i>
-                            </div>
-                        </div> *@
+              
                         <ul class="quantity-with-btn pb-9">
                           
                             <li class="quantity">
@@ -202,7 +176,7 @@
                                 @foreach (var categoty in Model.Categories)
                                 {
                                     <li>
-                                        <a href="#">@categoty.CATE_NAME</a>
+                                        <a href="#">@categoty.Name</a>
                                     </li>
 
                                 }

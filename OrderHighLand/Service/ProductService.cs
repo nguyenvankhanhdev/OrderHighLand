@@ -1,239 +1,465 @@
 ﻿using Neo4j.Driver;
 using OrderHighLand.Models;
-using Category = OrderHighLand.Models.Category;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
+
 
 namespace OrderHighLand.Service
 {
-    public class ProductService
-    {
-        private readonly IDriver _driver;
-        public ProductService(IDriver driver)
-        {
-            _driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        }
+	public class ProductService
+	{
+		private readonly IDriver _driver;
+		public ProductService(IDriver driver)
+		{
+			_driver = driver;
+		}
+
+		// Lấy tất cả các Product
+		public async Task<List<Products>> GetAllAsync()
+		{
+			var session = _driver.AsyncSession();
+			var result = await session.ExecuteReadAsync(async transaction =>
+			{
+				var readQuery = "MATCH (p:Product) RETURN p";
+				var readResult = await transaction.RunAsync(readQuery);
+				var products = await readResult.ToListAsync(record =>
+				{
+					var node = record["p"].As<INode>();
+					return new Products
+					{
+						Id = node.Properties["Id"].As<int>(),
+						Name = node.Properties["Name"].As<string>(),
+						Slug = node.Properties["Slug"].As<string>(),
+						Image = node.Properties["Image"].As<string>(),
+						Type = node.Properties["Type"].As<string>(),
+						Cate_Id = node.Properties["Cate_Id"].As<int>()
+					};
+				});
+				return products;
+			});
+			await session.CloseAsync();
+			return result;
+		}
+		public string GenerateSlug(string name)
+		{
+			name = name.ToLowerInvariant();
+			name = Regex.Replace(name, @"[^a-z0-9\s-]", "");
+			name = Regex.Replace(name, @"\s+", "-").Trim('-');
+			name = Regex.Replace(name, @"-+", "-");
+			return name;
+		}
+
+		// Lấy 4 sản phẩm type Hot
+		public async Task<List<Products>> getFourHotProduct()
+		{
+			var query = @"MATCH (a:Product {Type:'Hot'}) 
+						RETURN a
+						LIMIT 4";
+			try
+			{
+				var session = _driver.AsyncSession();
+				var result = await session.RunAsync(query);
+
+				var products = new List<Products>();
+
+				await result.ForEachAsync(record =>
+				{
+					var node = record["a"].As<INode>();
+					var product = new Products
+					{
+						Id = node.Properties["Id"].As<int>(),
+						Name = node.Properties["Name"].As<string>(),
+						Image = node.Properties["Image"].As<string>(),
+						Type = node.Properties["Type"].As<string>(),
+						Cate_Id = node.Properties["Cate_Id"].As<int>(),
+						Slug = node.Properties["Slug"].As<string>()
+					};
+					products.Add(product);
+				});
+				return products;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				return new List<Products>();
+			}
+		}
+
+		// Lấy 2 sản phẩm type New
+		public async Task<List<Products>> getTwoNewProduct()
+		{
+			var query = @"MATCH (a:Product {Type:'New'}) 
+						RETURN a
+						LIMIT 2";
+			try
+			{
+				var session = _driver.AsyncSession();
+				var result = await session.RunAsync(query);
+
+				var products = new List<Products>();
+
+				await result.ForEachAsync(record =>
+				{
+					var node = record["a"].As<INode>();
+					var product = new Products
+					{
+						Id = node.Properties["Id"].As<int>(),
+						Name = node.Properties["Name"].As<string>(),
+						Image = node.Properties["Image"].As<string>(),
+						Type = node.Properties["Type"].As<string>(),
+						Cate_Id = node.Properties["Cate_Id"].As<int>(),
+						Slug = node.Properties["Slug"].As<string>()
+					};
+					products.Add(product);
+				});
+				return products;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				return new List<Products>();
+			}
 
 
 
-        public async Task<List<Products>> GetAllAsync()
-        {
-            var session = _driver.AsyncSession();
-            var result = await session.ExecuteReadAsync(async transaction =>
-            {
-                var readQuery = "MATCH (p:Product) RETURN p";
-                var readResult = await transaction.RunAsync(readQuery);
-                var products = await readResult.ToListAsync(record =>
-                {
-                    var node = record["p"].As<INode>();
-                    return new Products
-                    {
-                        Id = node.Properties["PRO_ID"].As<int>(),
-                        Name = node.Properties["PRO_NAME"].As<string>(),
-                        Slug = node.Properties["PRO_SLUG"].As<string>(),
-                        Cate_Id = node.Properties["CATE_ID"].As<int>()
-                    };
-                });
-                return products;
-            });
-            await session.CloseAsync();
-            return result;
-        }
+		}
 
-        private int getIdMax()
-        {
-            var session = _driver.AsyncSession();
-            var result = session.ExecuteReadAsync(async transaction =>
-            {
-                var readQuery = "MATCH (p:Product) RETURN max(p.PRO_ID) as max";
-                var readResult = await transaction.RunAsync(readQuery);
-                var products = await readResult.ToListAsync(record =>
-                {
-                    var node = record["max"].As<int>();
-                    return node;
-                });
-                return products;
-            });
-            session.CloseAsync();
-            return result.Result[0];
-        }
-        public async Task<Products> CreateAsync(Products product)
-        {
-            var session = _driver.AsyncSession();
-            try
-            {
-                var result = await session.ExecuteWriteAsync(async transaction =>
-                {
-                    // Truy vấn tạo node Product với các thuộc tính được truyền vào
-                    var createQuery = @"
+		public async Task<List<Products>> getProductByCateId(int cateId)
+		{
+			var query = @"MATCH (c:Product {Cate_Id: $cateId}) RETURN c";
+
+			try
+			{
+				var session = _driver.AsyncSession();
+				var result = await session.RunAsync(query, new { cateId });
+				var products = new List<Products>();
+				await result.ForEachAsync(record =>
+				{
+					var node = record["c"].As<INode>();
+					var product = new Products
+					{
+						Id = node.Properties["Id"].As<int>(),
+						Name = node.Properties["Name"].As<string>(),
+						Image = node.Properties["Image"].As<string>(),
+						Type = node.Properties["Type"].As<string>(),
+						Cate_Id = node.Properties["Cate_Id"].As<int>(),
+						Slug = node.Properties["Slug"].As<string>()
+					};
+					products.Add(product);
+				});
+				return products;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				return new List<Products>();
+			}
+
+		}
+
+		// Lấy Id lớn nhất của Product
+		private int getIdMax()
+		{
+			var session = _driver.AsyncSession();
+			var result = session.ExecuteReadAsync(async transaction =>
+			{
+				var readQuery = "MATCH (p:Product) RETURN max(p.Id) as max";
+				var readResult = await transaction.RunAsync(readQuery);
+				var products = await readResult.ToListAsync(record =>
+				{
+					var node = record["max"].As<int>();
+					return node;
+				});
+				return products;
+			});
+			session.CloseAsync();
+			return result.Result[0];
+		}
+		public async Task<Products> CreateAsync(Products product)
+		{
+			var session = _driver.AsyncSession();
+			try
+			{
+				var result = await session.ExecuteWriteAsync(async transaction =>
+				{
+
+					var newProductId = getIdMax() + 1;
+					var productSlug = GenerateSlug(product.Name);
+
+					var createQuery = @"
 					CREATE (p:Product {
-                    PRO_ID: $PRO_ID, 
-                    PRO_NAME: $PRO_NAME, 
-                    PRO_SLUG: $PRO_SLUG, 
-                    PRO_IMAGE: $PRO_IMAGE, 
-                    CATE_ID: $CATE_ID 
+                    Id: $Id, 
+                    Name: $Name, 
+                    Slug: $Slug, 
+                    Image: $Image,
+					Type: $Type,
+                    Cate_Id: $Cate_Id 
                 })
                 RETURN p";
+					// Tạo sản phẩm mới
+					var createProductQuery = @"
+						CREATE (p:Product {
+							Id: $PRO_ID, 
+							Name: $PRO_NAME, 
+							Slug: $PRO_SLUG, 
+							Image: $PRO_IMAGE,
+							Cate_Id: $CATE_ID
 
-                    // Tạo các tham số truy vấn
-                    var createParams = new
-                    {
-                        PRO_ID = getIdMax() + 1, // Giả sử hàm getIdMax() trả về ID lớn nhất hiện có
-                        PRO_NAME = product.Name,
-                        PRO_SLUG = product.Slug,
-                        PRO_IMAGE = product.Image,  // Assuming you have this property
-                        CATE_ID = product.Cate_Id
-                    };
+						})
+						RETURN p";
 
-                    // Thực thi truy vấn và lấy kết quả
-                    var createResult = await transaction.RunAsync(createQuery, createParams);
+					var createProductParams = new
+					{
 
-                    // Xử lý kết quả trả về
-                    var createdProduct = await createResult.SingleAsync(record =>
-                    {
-                        var node = record["p"].As<INode>();
-                        return new Products
-                        {
-                            Id = node.Properties["PRO_ID"].As<int>(),
-                            Name = node.Properties["PRO_NAME"].As<string>(),
-                            Slug = node.Properties["PRO_SLUG"].As<string>(),
-                            Image = node.Properties["PRO_IMAGE"].As<string>(),
-                            Cate_Id = node.Properties["CATE_ID"].As<int>()
-                        };
-                    });
+						PRO_ID = newProductId,
+						PRO_NAME = product.Name,
+						PRO_SLUG = productSlug,
+						PRO_IMAGE = product.Image,
+						CATE_ID = product.Cate_Id,
 
-                    return createdProduct;
-                });
+						Id = getIdMax() + 1, // Giả sử hàm getIdMax() trả về ID lớn nhất hiện có
+						Name = product.Name,
+						Slug = product.Slug,
+						Image = product.Image,
+						Type = product.Type,
+						Cate_Id = product.Cate_Id
 
-                return result;
-            }
-            finally
-            {
-                await session.CloseAsync();
-            }
-        }
+					};
 
+					var createResult = await transaction.RunAsync(createProductQuery, createProductParams);
 
+					var createdProduct = await createResult.SingleAsync(record =>
+					{
+						var node = record["p"].As<INode>();
+						return new Products
+						{
+							Id = node.Properties["Id"].As<int>(),
+							Name = node.Properties["Name"].As<string>(),
+							Slug = node.Properties["Slug"].As<string>(),
+							Image = node.Properties["Image"].As<string>(),
+							Type = node.Properties["Type"].As<string>(),
+							Cate_Id = node.Properties["Cate_Id"].As<int>()
+						};
+					});
 
-        public Task<T> DeleteAsync<T>(int id)
-        {
-            throw new NotImplementedException();
-        }
+					// Tạo liên kết đến Category
+					var createRelationQuery = @"
+                MATCH (p:Product {Id: $PRO_ID})
+                MATCH (c:Category {Id: $CATE_ID})
+                CREATE (p)-[:BELONGS_TO]->(c)";
 
+					var createRelationParams = new
+					{
+						PRO_ID = newProductId,
+						CATE_ID = product.Cate_Id // Cate_Id từ sản phẩm
+					};
 
+					await transaction.RunAsync(createRelationQuery, createRelationParams);
 
-        public Task<T> GetByIdAsync<T>(int id)
-        {
-            throw new NotImplementedException();
-        }
+					return createdProduct;
+				});
 
-        public Task<T> UpdateAsync<T>(int id, Products product)
-        {
-            throw new NotImplementedException();
-        }
-        //public async Task<Products> GetProductBySlug(string slug)
-        //{
-        //    var session = _driver.AsyncSession();
-        //    try
-        //    {
-        //        var result = await session.ExecuteReadAsync(async transaction =>
-        //        {
-        //            // Sử dụng $slug để biểu thị biến được truyền vào từ mã C#
-        //            var readQuery = "MATCH (p:Product {Slug: $slug}) RETURN p LIMIT 1";
-        //            var cursor = await transaction.RunAsync(readQuery, new { slug });
-
-        //            // Kiểm tra và lấy kết quả
-        //            if (await cursor.FetchAsync())
-        //            {
-        //                var record = cursor.Current;
-        //                var node = record["p"].As<INode>();
-
-        //                return new Products
-        //                {
-        //                    Id = (int)node["Id"].As<long>(),
-        //                    Name = node["Name"].As<string>(),
-        //                    Slug = node["Slug"].As<string>(),
-        //                    Image = node["Image"].As<string>(),
-        //                    Cate_Id = (int)node["Cate_Id"].As<long>()
-        //                };
-        //            }
-        //            return null;
-        //        });
-        //        return result;
-        //    }
-        //    finally
-        //    {
-        //        await session.CloseAsync();
-        //    }
-        //}
-
-        public async Task<Products> GetProductBySlug(string slug)
-        {
-            var session = _driver.AsyncSession();
-            try
-            {
-                var result = await session.ExecuteReadAsync(async transaction =>
-                {
-                    var readQuery = @"
-MATCH (p:Product {Slug: $slug})
-OPTIONAL MATCH (p)<-[:VARIANT_OF]-(pv:ProductVariant)-[:HAS_SIZE]->(s:Size)
-OPTIONAL MATCH (p)-[:BELONGS_TO]->(c:Category)
-RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories LIMIT 1";
+				return result;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error creating product and linking to category", ex);
+			}
+			finally
+			{
+				await session.CloseAsync();
+			}
+		}
 
 
-                    var cursor = await transaction.RunAsync(readQuery, new { slug });
+		public async Task DeleteAsync(int id)
+		{
+			var session = _driver.AsyncSession();
+			try
+			{
+				await session.ExecuteWriteAsync(async transaction =>
+				{
+					var deleteQuery = @"
+                        MATCH (p:Product {Id: $PRO_ID})
+                        DETACH DELETE p";
 
-                    if (await cursor.FetchAsync())
-                    {
-                        var record = cursor.Current;
-                        var productNode = record["p"].As<INode>();
-                        var variants = record["variants"].As<List<INode>>();
-                        var sizes = record["sizes"].As<List<INode>>();
-                        var categories = record["categories"].As<List<INode>>();
+					var deleteParams = new
+					{
+						PRO_ID = id,
+					};
 
-                        var product = new Products
-                        {
-                            Id = (int)productNode["Id"].As<long>(),
-                            Name = productNode["Name"].As<string>(),
-                            Slug = productNode["Slug"].As<string>(),
-                            Image = productNode["Image"].As<string>(),
-                            Cate_Id = (int)productNode["Cate_Id"].As<long>(),
+					await transaction.RunAsync(deleteQuery, deleteParams);
+				});
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error deleting product", ex);
+			}
+			finally
+			{
+				await session.CloseAsync();
+			}
+		}
+		public async Task<Products> GetByIdAsync(int id)
+		{
+			var session = _driver.AsyncSession();
+			var result = await session.ExecuteReadAsync(async transaction =>
+			{
+				var readQuery = @"
+					MATCH (p:Product {Id: $PRO_ID})
+					RETURN p";
 
-                            ProductVariants = variants.Select(v => new ProductVariant
-                            {
-                                ID = (int)v["Id"].As<long>(),
-                                PRO_ID = (int)v["Pro_Id"].As<long>(),
-                                Price = v["Price"].As<float>(),
-                                Quantity = (int)v["Quantity"].As<long>(),
-                                S_ID = (int)v["Size_Id"].As<long>()
-                            }).ToList(),
+				var readParams = new
+				{
+					PRO_ID = id,
+				};
 
-                            Sizes = sizes.Select(s => new Sizes
-                            {
-                                ID = (int)s["Id"].As<long>(),
-                                S_SIZE = s["Size"].As<string>(),
-                                S_PRICE = s["Price"].As<float>()
-                            }).ToList(),
+				var readResult = await transaction.RunAsync(readQuery, readParams);
+				var product = await readResult.SingleAsync(record =>
+				{
+					var node = record["p"].As<INode>();
+					return new Products
+					{
+						Id = node.Properties["Id"].As<int>(),
+						Name = node.Properties["Name"].As<string>(),
+						Slug = node.Properties["Slug"].As<string>(),
+						Image = node.Properties["Image"].As<string>(),
+						Cate_Id = node.Properties["Cate_Id"].As<int>()
+					};
+				});
 
-                            Categories = categories.Select(c => new Category
-                            {
-                                CATE_ID = (int)c["Id"].As<long>(),
-                                CATE_NAME = c["Name"].As<string>(),
-                                CATE_SLUG = c["Slug"].As<string>()
-                            }).ToList()
-                        };
+				return product;
+			});
+			await session.CloseAsync();
+			return result;
+		}
 
-                        return product;
-                    }
-                    return null;
-                });
-                return result;
-            }
-            finally
-            {
-                await session.CloseAsync();
-            }
-        }
+		public async Task<Products> UpdateAsync(int id, Products product)
+		{
+			var session = _driver.AsyncSession();
+			try
+			{
+				var result = await session.ExecuteWriteAsync(async transaction =>
+				{
+					var productSlug = GenerateSlug(product.Name);
+					var updateQuery = @"
+						MATCH (p:Product {Id: $PRO_ID})
+						SET p.Name = $PRO_NAME, p.Slug = $PRO_SLUG, p.Image = $PRO_IMAGE, p.Cate_Id = $CATE_ID
+						RETURN p";
 
+					var updateParams = new
+					{
+						PRO_ID = id,
+						PRO_NAME = product.Name,
+						PRO_SLUG = productSlug,
+						PRO_IMAGE = product.Image,
+						CATE_ID = product.Cate_Id
+					};
 
-    }
+					var updateResult = await transaction.RunAsync(updateQuery, updateParams);
+					var updatedProduct = await updateResult.SingleAsync(record =>
+					{
+						var node = record["p"].As<INode>();
+						return new Products
+						{
+							Id = node.Properties["Id"].As<int>(),
+							Name = node.Properties["Name"].As<string>(),
+							Slug = node.Properties["Slug"].As<string>(),
+							Image = node.Properties["Image"].As<string>(),
+							Cate_Id = node.Properties["Cate_Id"].As<int>()
+						};
+					});
+
+					return updatedProduct;
+				});
+
+				return result;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error updating product", ex);
+			}
+			finally
+			{
+				await session.CloseAsync();
+			}
+
+		}
+		public async Task<Products> GetProductBySlug(string slug)
+		{
+			var session = _driver.AsyncSession();
+			try
+			{
+				var result = await session.ExecuteReadAsync(async transaction =>
+				{
+					// Truy vấn lấy Product, ProductVariant và Sizes dựa trên ID
+					var readQuery = @"
+                MATCH (p:Product {Slug: $slug})
+                // Truy vấn lấy các ProductVariant dựa trên Pro_Id của Product
+                OPTIONAL MATCH (pv:ProductVariant)
+                WHERE pv.Pro_Id = p.Id
+                // Truy vấn lấy các Size dựa trên Size_Id của ProductVariant
+                OPTIONAL MATCH (s:Size)
+                WHERE pv.Size_Id = s.Id
+                // Truy vấn lấy Category dựa trên Cate_Id của Product
+                OPTIONAL MATCH (c:Category)
+                WHERE p.Cate_Id = c.Id
+                RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories LIMIT 1";
+
+					var cursor = await transaction.RunAsync(readQuery, new { slug });
+
+					if (await cursor.FetchAsync())
+					{
+						var record = cursor.Current;
+						var productNode = record["p"].As<INode>();
+						var variants = record["variants"].As<List<INode>>();
+						var sizes = record["sizes"].As<List<INode>>();
+						var categories = record["categories"].As<List<INode>>();
+
+						var product = new Products
+						{
+							Id = (int)productNode["Id"].As<long>(),
+							Name = productNode["Name"].As<string>(),
+							Slug = productNode["Slug"].As<string>(),
+							Image = productNode["Image"].As<string>(),
+							Cate_Id = (int)productNode["Cate_Id"].As<long>(),
+
+							ProductVariants = variants.Select(v => new ProductVariant
+							{
+								Id = (int)v["Id"].As<long>(),
+								Pro_Id = (int)v["Pro_Id"].As<long>(),
+								Price = v["Price"].As<float>(),
+								Quantity = (int)v["Quantity"].As<long>(),
+								Size_Id = (int)v["Size_Id"].As<long>()
+							}).ToList(),
+
+							Sizes = sizes.Select(s => new Sizes
+							{
+								Id = (int)s["Id"].As<long>(),
+								Size = s["Size"].As<string>(),
+								Price = s["Price"].As<float>()
+							}).ToList(),
+
+							Categories = categories.Select(c => new Models.Category
+							{
+								Id = (int)c["Id"].As<long>(),
+								Name = c["Name"].As<string>(),
+								Slug = c["Slug"].As<string>()
+							}).ToList()
+						};
+
+						return product;
+					}
+					return null;
+				});
+				return result;
+			}
+			finally
+			{
+				await session.CloseAsync();
+			}
+			}
+
+		}
 
 }
