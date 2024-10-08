@@ -73,7 +73,7 @@ namespace OrderHighLand.Controllers.User
                 }
                 else if (user.ROLE_ID == 2)
                 {
-                    return RedirectToAction("Index", "User");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 return RedirectToAction("Index", "Home");

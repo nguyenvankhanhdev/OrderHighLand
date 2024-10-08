@@ -1075,9 +1075,9 @@
                 // Xóa tin nhắn khỏi ô nhập
                 userInput.value = '';
 
-                // Gửi tin nhắn đến API chatbot
+                // Gửi tin nhắn đến API chatbot của bạn (không cần Azure)
                 try {
-                    const response = await fetch('https://localhost:7099/api/messages', { // Thay thế bằng URL endpoint thật của bạn
+                    const response = await fetch('http://localhost:5135/api/messages', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1090,8 +1090,9 @@
                         })
                     });
 
+
                     // Đọc phản hồi từ bot
-                    const botMessage = await response.text(); // Thay đổi để lấy response từ API của Bot Framework
+                    const botMessage = await response.text();
                     const botMessageDiv = document.createElement('div');
                     botMessageDiv.classList.add('botMessage');
                     botMessageDiv.textContent = botMessage;
@@ -1108,8 +1109,8 @@
                 const chatBody = document.getElementById('chatBody');
                 chatBody.scrollTop = chatBody.scrollHeight;
             }
-
         </script>
+
 
         <!-- Scroll To Top End Here -->
 
