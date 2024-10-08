@@ -66,7 +66,6 @@ namespace OrderHighLand.Controllers.User
                 HttpContext.Session.SetString("UserName", user.A_NAME);
                 HttpContext.Session.SetString("UserEmail", user.A_EMAIL);
                 HttpContext.Session.SetString("RoleId", user.ROLE_ID.ToString());
-
                 if (user.ROLE_ID == 1) 
                 {
                     return RedirectToAction("Index", "AdminDashboard");
@@ -75,7 +74,6 @@ namespace OrderHighLand.Controllers.User
                 {
                     return RedirectToAction("Index", "Home");
                 }
-
                 return RedirectToAction("Index", "Home");
             }
 

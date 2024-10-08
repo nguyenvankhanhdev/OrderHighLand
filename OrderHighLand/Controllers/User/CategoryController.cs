@@ -10,17 +10,20 @@ namespace OrderHighLand.Controllers.User
 		private readonly ProductService proService;
 		private readonly CategoryService categoryService;
 		private readonly ProductVariantService productVariantService;
+		private readonly ToppingService toppingService;
 
-		public CategoryController(ILogger<CategoryController> logger, ConnecNeo4J _Connect, ProductService _proService, CategoryService _categoryService, ProductVariantService _productVariantService)
+		public CategoryController(ILogger<CategoryController> logger,ToppingService _topping, ConnecNeo4J _Connect, ProductService _proService, CategoryService _categoryService, ProductVariantService _productVariantService)
 		{
 			_logger = logger;
 			connecNeo4J = _Connect;
 			proService = _proService;
 			categoryService = _categoryService;
 			productVariantService = _productVariantService;
+			toppingService = _topping;	
 		}
 		public async Task<IActionResult> Index(string type)
 		{
+			var allTopping = await toppingService.getAllTopping();
 			var allSize = await connecNeo4J.getAllSize();
 			var cateCount = await categoryService.countAllCate();
 			var productVariants = await productVariantService.getAllProductVariants();
@@ -38,6 +41,7 @@ namespace OrderHighLand.Controllers.User
 						   join p in products on pv.Pro_Id equals p.Id
 						   where pv.Size_Id == 1 // Lọc các ProductVariant có Size_Id = 1
 						   select new { Product = p, ProductVariant = pv };
+			ViewBag.Toppings = allTopping;
 			ViewBag.ProSize = provarSize;
 			ViewBag.ProductVariant = productVariants;
 			ViewBag.CateCount = cateCount;

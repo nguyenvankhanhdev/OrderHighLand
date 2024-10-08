@@ -19096,6 +19096,7 @@ blockquote .user-name:before {
   justify-content: center;
 }
 
+
 .main-nav>ul>li {
   display: inline-block;
 }
@@ -21276,9 +21277,18 @@ blockquote .user-name:before {
   top: 115px;
 }
 
-.single-product-content>.title {
-  color: #444444;
-  font-size: 30px;
+.ChooseSize{
+    margin-top:20px;
+}
+
+.ChooseTopping{
+    margin-top:20px;
+}
+
+.single-product-content > .title {
+    color: #444444;
+    font-size: 30px;
+    font-weight: bold;
 }
 
 .single-product-content .rating-box-wrap {
@@ -21312,11 +21322,140 @@ blockquote .user-name:before {
   line-height: 30px;
 }
 
+/* Thiết kế checkbox cho phần topping */
+.ListTopping {
+    display: flex;
+    flex-wrap: wrap; /* Cho phép các item xuống dòng nếu không đủ không gian */
+    gap: 15px; /* Khoảng cách giữa các item */
+}
+
+.item_topping {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topping-checkbox {
+    display: none; /* Ẩn checkbox */
+}
+
+.topping-label {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+    white-space: nowrap; /* Giữ cho nội dung không bị xuống dòng trong nhãn */
+}
+
+.topping-checkbox:checked + .topping-label {
+    background-color: #EE3231; /* Đổi nền thành màu đỏ */
+    color: white; /* Đổi màu chữ thành trắng */
+    border-color: red; /* Đổi màu viền thành đỏ */
+}
+
+/*Thiết kế checkbox cho Size*/
+/* Thiết kế checkbox cho Size */
+
+/* Tạo khoảng cách giữa các item và canh chỉnh */
+.ListSize {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.prosize-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ẩn checkbox nhưng vẫn cho phép tương tác */
+.prosize-checkbox {
+    display: none; /* Ẩn checkbox để không hiển thị */
+}
+
+
+
+.prosize-label {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+    white-space: nowrap; /* Giữ cho nội dung không bị xuống dòng trong nhãn */
+}
+
+/* Khi checkbox được chọn, thay đổi màu nền, màu chữ và viền */
+.prosize-checkbox:checked + .prosize-label {
+    background-color: #EE3231; /* Đổi nền thành màu đỏ */
+    color: white; /* Đổi màu chữ thành trắng */
+    border-color: red; /* Đổi màu viền thành đỏ */
+}
+
+
+.custom-select {
+    border: none; /* Không có viền */
+    border-radius: 20px; /* Góc tròn */
+    padding: 10px 20px; /* Khoảng cách bên trong */
+    font-size: 16px; /* Kích thước chữ */
+    appearance: none; /* Ẩn hình thức mặc định của select */
+    background-color: #ffffff; /* Màu nền */
+    color: #333; /* Màu chữ mặc định */
+    cursor: pointer; /* Con trỏ khi di chuột */
+    text-align: center; /* Căn giữa văn bản */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng nhẹ */
+    transition: box-shadow 0.3s; /* Hiệu ứng chuyển tiếp khi thay đổi bóng */
+}
+
+    /* Tạo kiểu cho các option */
+    .custom-select option {
+        background-color: #ffffff; /* Màu nền cho các option */
+        color: #333; /* Màu chữ cho các option */
+        padding: 10px; /* Khoảng cách bên trong cho các option */
+        transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển tiếp cho background và color */
+    }
+
+        .custom-select option:hover {
+            background-color: #007bff; /* Màu nền khi di chuột qua các option */
+            color: #ffffff; /* Màu chữ khi di chuột qua các option */
+        }
+
+    .custom-select:focus {
+        outline: none; /* Ẩn đường viền khi chọn */
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Màu bóng khi chọn */
+    }
+
+    /* Tạo biểu tượng cho dropdown */
+    .custom-select::after {
+        content: '▼'; /* Biểu tượng mũi tên */
+        position: absolute; /* Đặt vị trí tuyệt đối */
+        right: 15px; /* Khoảng cách từ bên phải */
+        top: 50%; /* Căn giữa theo chiều dọc */
+        transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+        pointer-events: none; /* Không cho phép sự kiện chuột trên biểu tượng */
+    }
+
+
+
+
+
+
+
 .single-product-content .quantity-with-btn {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin-top: 20px;
 }
 
 @media (max-width: 479px) {
@@ -21587,6 +21726,10 @@ blockquote .user-name:before {
 .banner-content .title {
   text-transform: uppercase;
   font-size: 48px;
+}
+
+#textMP{
+    color:white;
 }
 
 .banner-content .title.text-charcoal {
@@ -23568,6 +23711,125 @@ blockquote .user-name:before {
   vertical-align: middle;
 }
 
+#placeOrderButton{
+    text-align:center;
+}
+/* css thông tin người dùng trong cart */
+.bill-detail {
+    padding-top: 30px;
+    font-weight: bold;
+}
+/*Css thông báo*/
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+    .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .notification.hidden {
+        display: none;
+    }
+
+.modal-confirm {
+    display: none; /* Giữ ẩn modal theo mặc định */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+    justify-content: center;
+    align-items: center; /* Đảm bảo modal được căn giữa */
+}
+
+.modal-content-confirm {
+    background-color: #fff;
+    padding: 40px;
+    border: none;
+    width: 400px; /* Kích thước modal lớn hơn */
+    text-align: center;
+    border-radius: 10px; /* Bo góc mềm mại */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Đổ bóng cho modal */
+    font-family: 'Arial', sans-serif; /* Kiểu chữ mượt mà hơn */
+    position: relative;
+}
+
+.close-button-confirm {
+    color: #aaa;
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .close-button-confirm:hover,
+    .close-button-confirm:focus {
+        color: #000;
+        text-decoration: none;
+    }
+
+.modal-content-confirm h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.modal-content-confirm p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.btn-confirm {
+    margin: 10px 5px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
+}
+
+.btn-success-confirm {
+    background-color: #4CAF50;
+    color: white;
+}
+
+    .btn-success-confirm:hover {
+        background-color: #45a049;
+    }
+
+.btn-danger-confirm {
+    background-color: #f44336;
+    color: white;
+}
+
+    .btn-danger-confirm:hover {
+        background-color: #e53935;
+    }
+
+
+
 .table-content table td {
   border-top: medium none;
   padding: 18px 10px;
@@ -23575,8 +23837,12 @@ blockquote .user-name:before {
   font-size: 13px;
 }
 
+.itemCartTopping {
+    margin-bottom: 0;
+}
+
 @media (max-width: 767.98px) {
-  .table-content table td {
+    .table-content table td {
     width: 100%;
     display: block;
   }
@@ -23590,13 +23856,15 @@ blockquote .user-name:before {
   }
 }
 
+
+
 .table-content table td.product_remove {
   font-size: 20px;
 }
 
 .table-content table td.product-thumbnail img {
-  width: auto;
-  height: 100%;
+  width: 112px;
+  height: 112px;
 }
 
 .table-content table td.product-name {
