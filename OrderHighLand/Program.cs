@@ -2,6 +2,9 @@
 using Neo4j.Driver;
 
 using OrderHighLand.Models;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Builder;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IDriver>(provider =>
 {
@@ -30,6 +33,17 @@ builder.Services.AddSingleton<SizeService>();
 builder.Services.AddSingleton<ProductVartiantService>();
 builder.Services.AddSingleton<ProductVariantService>();
 
+// Đăng ký bot với dependency injection
+builder.Services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
+builder.Services.AddTransient<IBot, ChatbotService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 
 
 
@@ -44,6 +58,7 @@ if (!app.Environment.IsDevelopment())
 app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseCors("AllowAllOrigins");
 
 app.UseRouting();
 
@@ -52,6 +67,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
 
 app.Run();
 

@@ -460,6 +460,72 @@ namespace OrderHighLand.Service
 			}
 			}
 
-		}
+
+        // Phương thức lấy giá sản phẩm dựa trên tên sản phẩm và kích thước
+        public async Task<string> GetProductPriceAsync(string productName, string size)
+        {
+            var session = _driver.AsyncSession();
+            try
+            {
+                var query = @"
+                    MATCH (p:Product)-[:VARIANT_OF]-(pv:ProductVariant)-[:HAS_SIZE]-(s:Size)
+                    WHERE p.Name = $productName AND s.Size = $size
+                    RETURN p.Name AS ProductName, s.Size AS Size, pv.Price AS Price";
+
+                var result = await session.RunAsync(query, new { productName, size });
+
+                var records = await result.ToListAsync(); 
+
+                if (records.Count > 0)
+                {
+                    var record = records[0];
+                    var price = record["Price"].As<string>();
+                    return $"Giá của sản phẩm {productName} với kích thước {size} là: {price}";
+                }
+                else
+                {
+                    return "Không tìm thấy sản phẩm với thông tin yêu cầu.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return "Đã xảy ra lỗi khi lấy giá sản phẩm.";
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+        }
+
+        public async Task<List<string>> GetAllProductNamesAsync()
+        {
+            var session = _driver.AsyncSession();
+            try
+            {
+                var query = "MATCH (p:Product) RETURN p.Name AS ProductName";
+
+                var result = await session.RunAsync(query);
+                var productNames = new List<string>();
+
+                await result.ForEachAsync(record =>
+                {
+                    productNames.Add(record["ProductName"].As<string>());
+                });
+
+                return productNames;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching product names: {ex.Message}");
+                return new List<string>();
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+        }
+
+    }
 
 }

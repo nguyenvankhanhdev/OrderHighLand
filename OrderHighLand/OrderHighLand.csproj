@@ -15,7 +15,11 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.22.9" />
+    <PackageReference Include="Microsoft.Bot.Builder.AI.QnA" Version="4.22.9" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.22.9" />
     <PackageReference Include="Neo4j.Driver" Version="5.24.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>
