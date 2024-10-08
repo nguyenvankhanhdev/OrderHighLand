@@ -159,7 +159,7 @@ namespace OrderHighLand.Controllers.User
                 Status = "Pending",
                 A_Id = A_Id,
                 TotalPrice = cartPrice,
-                Address_Id= Address_Id,
+                Address_Id = Address_Id,
             };
             await orderService.addToOrder(order);
 

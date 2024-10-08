@@ -15,6 +15,7 @@ builder.Services.AddSingleton<IDriver>(provider =>
 });
 
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -22,14 +23,20 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
+builder.Services.AddSession();
+builder.Services.AddSingleton<AccountService>();
+
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
+builder.Services.AddSingleton<RoleService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<ConnecNeo4J>();
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<SizeService>();
 builder.Services.AddSingleton<ProductVartiantService>();
 builder.Services.AddSingleton<ProductVariantService>();
+
 
 
 // Đăng ký bot với dependency injection
@@ -48,6 +55,8 @@ builder.Services.AddSingleton<ToppingService>();
 builder.Services.AddSingleton<CartService>();
 builder.Services.AddSingleton<AddressService>();
 builder.Services.AddSingleton<OrderService>();
+
+builder.Services.AddSingleton<DashboardService>();
 
 var app = builder.Build();
 
@@ -68,9 +77,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapControllers();
 
+	pattern: "{controller=Home}/{action=Index}/{id?}");
 app.Run();
 
 

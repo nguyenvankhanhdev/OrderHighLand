@@ -1,0 +1,65 @@
+﻿@model OrderHighLand.Models.VM.AccountRoleVM
+@{
+	Layout = "_AdminLayout";
+}
+<section class="section">
+	<div class="section-header">
+		<h1>Accounts</h1>
+	</div>
+	<div class="section-body">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						@* <div class="card-header-action">
+							<a asp-controller="AAccounts" asp-action="Create" class="btn btn-primary">
+								<i class="fas fa-plus"></i> Create New
+							</a>
+						</div> *@
+					</div>
+					<div class="card-body">
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>Account ID</th>
+									<th>Name</th>
+									<th>Email</th>
+									<th>Role</th>
+									<th>Account Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var item in Model.accounts)
+								{
+									<tr>
+										<td>@item.A_ID</td>
+										<td>@item.A_NAME</td>
+										<td>
+											@{
+												var role = Model.roles.FirstOrDefault(x => x.Id == item.A_ID);
+												if (role != null)
+												{
+													@role.Name
+												}
+												else
+												{
+													<p>Role Not Found</p>
+												}
+											}
+
+										</td>
+										<td>@item.A_EMAIL</td>
+										<td>
+											<a href="@Url.Action("Delete", "AAccounts", new { id = item.A_ID })" class="btn btn-danger delete-item"> <i class="far fa-trash-alt"></i></a>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- End of file -->

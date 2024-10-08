@@ -82,17 +82,17 @@ namespace OrderHighLand.Service
                 var result = await session.ExecuteWriteAsync(async transaction =>
                 {
                     var createQuery = @"
-            CREATE (a:Account {
-                Id: $A_ID,
-                Name: $A_NAME,    
-                Email: $A_EMAIL,   
-                Password: $A_PASSWORD,
-                Role_Id: 2  // Mặc định với Role_Id là 2
-            })
-            WITH a
-            MATCH (r:Role {Id: a.Role_Id}) 
-            CREATE (a)-[:HAS_ROLE]->(r) 
-            RETURN a";
+                          CREATE (a:Account {
+                              Id: $A_ID,
+                              Name: $A_NAME,    
+                              Email: $A_EMAIL,   
+                              Password: $A_PASSWORD,
+                              Role_Id: 2  // Mặc định với Role_Id là 2
+                          })
+                          WITH a
+                          MATCH (r:Role {Id: a.Role_Id}) 
+                          CREATE (a)-[:HAS_ROLE]->(r) 
+                          RETURN a";
 
                     var createParams = new
                     {

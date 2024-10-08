@@ -22,13 +22,11 @@
 					</div>
 					<div class="card-body">
 						<form asp-action="Edit" method="POST" enctype="multipart/form-data">
-							<!-- Đổi "Create" thành "Edit" -->
 							<div class="form-group">
 								<label>Image</label>
 								<input type="file" class="form-control" name="image">
-								<!-- Hiển thị ảnh hiện tại -->
-								<img src="@Url.Content(Model.products.Image)" alt="Current Image" style="width: 100px; height: 100px;">
-								<!-- Lưu ảnh cũ trong input hidden -->
+								<img src="~/imgs/@Url.Content(Model.products.Image)" alt="Current Image" style="width: 100px; height: 100px;">
+
 								<input type="hidden" asp-for="products.Image" value="@Model.products.Image" />
 							</div>
 							<input type="hidden" asp-for="products.Id">
@@ -49,7 +47,7 @@
 									</div>
 								</div>
 							</div>
-							<button type="submit" class="btn btn-primary">Update</button> <!-- Đổi "Create" thành "Update" -->
+							<button type="submit" class="btn btn-primary">Update</button>
 						</form>
 					</div>
 				</div>
