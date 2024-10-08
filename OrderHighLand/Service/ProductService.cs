@@ -392,17 +392,22 @@ namespace OrderHighLand.Service
 			{
 				var result = await session.ExecuteReadAsync(async transaction =>
 				{
-					// Truy vấn lấy Product, ProductVariant và Sizes
+					// Truy vấn lấy Product, ProductVariant và Sizes dựa trên ID
 					var readQuery = @"
-						MATCH (p:Product {Slug: $slug})
-						OPTIONAL MATCH (p)<-[:VARIANT_OF]-(pv:ProductVariant)-[:HAS_SIZE]->(s:Size)
-						OPTIONAL MATCH (p)-[:BELONGS_TO]->(c:Category)
-						RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories LIMIT 1";
-
+                MATCH (p:Product {Slug: $slug})
+                // Truy vấn lấy các ProductVariant dựa trên Pro_Id của Product
+                OPTIONAL MATCH (pv:ProductVariant)
+                WHERE pv.Pro_Id = p.Id
+                // Truy vấn lấy các Size dựa trên Size_Id của ProductVariant
+                OPTIONAL MATCH (s:Size)
+                WHERE pv.Size_Id = s.Id
+                // Truy vấn lấy Category dựa trên Cate_Id của Product
+                OPTIONAL MATCH (c:Category)
+                WHERE p.Cate_Id = c.Id
+                RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories LIMIT 1";
 
 					var cursor = await transaction.RunAsync(readQuery, new { slug });
 
-					// Kiểm tra và lấy kết quả
 					if (await cursor.FetchAsync())
 					{
 						var record = cursor.Current;
@@ -411,7 +416,6 @@ namespace OrderHighLand.Service
 						var sizes = record["sizes"].As<List<INode>>();
 						var categories = record["categories"].As<List<INode>>();
 
-						// Tạo đối tượng Product từ node product
 						var product = new Products
 						{
 							Id = (int)productNode["Id"].As<long>(),
@@ -419,7 +423,7 @@ namespace OrderHighLand.Service
 							Slug = productNode["Slug"].As<string>(),
 							Image = productNode["Image"].As<string>(),
 							Cate_Id = (int)productNode["Cate_Id"].As<long>(),
-							// Liên kết ProductVariant
+
 							ProductVariants = variants.Select(v => new ProductVariant
 							{
 								Id = (int)v["Id"].As<long>(),
@@ -428,7 +432,7 @@ namespace OrderHighLand.Service
 								Quantity = (int)v["Quantity"].As<long>(),
 								Size_Id = (int)v["Size_Id"].As<long>()
 							}).ToList(),
-							// Liên kết Sizes
+
 							Sizes = sizes.Select(s => new Sizes
 							{
 								Id = (int)s["Id"].As<long>(),
@@ -454,7 +458,74 @@ namespace OrderHighLand.Service
 			{
 				await session.CloseAsync();
 			}
-		}
-	}
+			}
+
+
+        // Phương thức lấy giá sản phẩm dựa trên tên sản phẩm và kích thước
+        public async Task<string> GetProductPriceAsync(string productName, string size)
+        {
+            var session = _driver.AsyncSession();
+            try
+            {
+                var query = @"
+                    MATCH (p:Product)-[:VARIANT_OF]-(pv:ProductVariant)-[:HAS_SIZE]-(s:Size)
+                    WHERE p.Name = $productName AND s.Size = $size
+                    RETURN p.Name AS ProductName, s.Size AS Size, pv.Price AS Price";
+
+                var result = await session.RunAsync(query, new { productName, size });
+
+                var records = await result.ToListAsync(); 
+
+                if (records.Count > 0)
+                {
+                    var record = records[0];
+                    var price = record["Price"].As<string>();
+                    return $"Giá của sản phẩm {productName} với kích thước {size} là: {price}";
+                }
+                else
+                {
+                    return "Không tìm thấy sản phẩm với thông tin yêu cầu.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return "Đã xảy ra lỗi khi lấy giá sản phẩm.";
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+        }
+
+        public async Task<List<string>> GetAllProductNamesAsync()
+        {
+            var session = _driver.AsyncSession();
+            try
+            {
+                var query = "MATCH (p:Product) RETURN p.Name AS ProductName";
+
+                var result = await session.RunAsync(query);
+                var productNames = new List<string>();
+
+                await result.ForEachAsync(record =>
+                {
+                    productNames.Add(record["ProductName"].As<string>());
+                });
+
+                return productNames;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching product names: {ex.Message}");
+                return new List<string>();
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+        }
+
+    }
 
 }

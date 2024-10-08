@@ -16,6 +16,10 @@ namespace OrderHighLand.Controllers.User
         {
             return View();
         }
+        public IActionResult Detail()
+        {
+            return View();
+        }
 
         public async Task<IActionResult> Register(Register model)
         {
@@ -36,6 +40,8 @@ namespace OrderHighLand.Controllers.User
                 }
 
                 await _userService.RegisterAsync(model);
+
+                TempData["SuccessMessage"] = "Đăng ký thành công!";
                 return RedirectToAction("Index", "Account");
             }
 
@@ -61,6 +67,15 @@ namespace OrderHighLand.Controllers.User
                 HttpContext.Session.SetString("UserEmail", user.A_EMAIL);
                 HttpContext.Session.SetString("RoleId", user.ROLE_ID.ToString());
 
+                if (user.ROLE_ID == 1) 
+                {
+                    return RedirectToAction("Index", "AdminDashboard");
+                }
+                else if (user.ROLE_ID == 2)
+                {
+                    return RedirectToAction("Index", "User");
+                }
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -68,6 +83,11 @@ namespace OrderHighLand.Controllers.User
             return View("Index");
         }
 
-
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
