@@ -1,7 +1,5 @@
 ﻿using OrderHighLand.Service;
 using Neo4j.Driver;
-
-using OrderHighLand.Models;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder;
 
@@ -33,6 +31,7 @@ builder.Services.AddSingleton<SizeService>();
 builder.Services.AddSingleton<ProductVartiantService>();
 builder.Services.AddSingleton<ProductVariantService>();
 
+
 // Đăng ký bot với dependency injection
 builder.Services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 builder.Services.AddTransient<IBot, ChatbotService>();
@@ -45,7 +44,10 @@ builder.Services.AddCors(options =>
 });
 
 
-
+builder.Services.AddSingleton<ToppingService>();
+builder.Services.AddSingleton<CartService>();
+builder.Services.AddSingleton<AddressService>();
+builder.Services.AddSingleton<OrderService>();
 
 var app = builder.Build();
 

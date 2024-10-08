@@ -797,7 +797,7 @@
 	/*  QTY Button
 /*----------------------------------------*/
 	$('.cart-plus-minus').append(
-		'<div class="dec qtybutton"><i class="fa fa-minus"></i></div><div class="inc qtybutton"><i class="fa fa-plus"></i></div>'
+		'<div class="dec qtybutton"><i id="textMP" class="fa fa-minus"></i></div><div class="inc qtybutton"><i id="textMP" class="fa fa-plus"></i></div>'
 	);
 	$('.qtybutton').on('click', function () {
 		var $button = $(this);

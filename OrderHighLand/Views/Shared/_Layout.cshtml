@@ -26,13 +26,14 @@
     <link rel="stylesheet" href="/assets//css/plugins/nice-select.css">
     <link rel="stylesheet" href="/assets//css/plugins/magnific-popup.min.css" />
     <link rel="stylesheet" href="/assets//css/plugins/ion.rangeSlider.min.css" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="/assets//css/vendor/vendor.min.css"> -->
     <!-- <link rel="stylesheet" href="/assets//css/plugins/plugins.min.css"> -->
     <!-- Style CSS -->
     <link rel="stylesheet" href="/assets//css/style.css">
     <!-- <link rel="stylesheet" href="/assets//css/style.min.css"> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 
@@ -102,7 +103,7 @@
                             <div class="header-middle-wrap position-relative">
 
                                 <a href="index.html" class="header-logo">
-                                    <img src="/assets//images/logo/dark.png" alt="Header Logo">
+                                    <img src="~/imgs/Logo-HighLands-Coffee.png" width="100px"  alt="Header Logo">
                                 </a>
 
                                 <div class="main-menu d-none d-lg-block">
@@ -181,9 +182,9 @@
                                             </a>
                                         </li>
                                         <li class="minicart-wrap me-3 me-lg-0">
-                                            <a href="#miniCart" class="minicart-btn toolbar-btn">
+                                            <a href="/Cart" class="minicart-btn">
                                                 <i class="pe-7s-shopbag"></i>
-                                                <span class="quantity">5</span>
+                                                <span class="quantity">0</span>
                                             </a>
                                         </li>
                                         <li class="mobile-menu_wrap d-block d-lg-none">
@@ -596,7 +597,7 @@
                         <span class="ammount">$240.00</span>
                     </div>
                     <div class="group-btn_wrap d-grid gap-2">
-                        <a href="/Cart" class="btn btn-dark btn-primary-hover">View Cart</a>
+                        <a href="#" class="btn btn-dark btn-primary-hover">View Cart</a>
                         <a href="/Cart/Checkout" class="btn btn-dark btn-primary-hover">Checkout</a>
                     </div>
                 </div>
@@ -1040,78 +1041,99 @@
         <a class="scroll-to-top" href="">
             <i class="fa fa-chevron-up"></i>
         </a>
+@* 
+         <div id="chatWidget">
+             <div id="chatHeader">
+                 <p>Chúng tôi hiện đang trực tuyến và sẵn sàng chat với bạn.</p>
+             </div>
+             <div id="chatBody">
+                 <div id="chatMessages">
+                     <!-- Các tin nhắn sẽ được thêm vào đây -->
+                     <div class="botMessage">Xin chào! Tôi có thể giúp gì cho bạn?</div>
+                 </div>
+             </div>
+             <div id="chatInput">
+                 <input type="text" id="userMessage" placeholder="Gõ vào đây và nhấn enter..." />
+                 <button onclick="sendMessage()">Gửi</button>
+             </div>
+         </div>
 
-        <div id="chatWidget">
-            <div id="chatHeader">
-                <p>Chúng tôi hiện đang trực tuyến và sẵn sàng chat với bạn.</p>
-            </div>
-            <div id="chatBody">
-                <div id="chatMessages">
-                    <!-- Các tin nhắn sẽ được thêm vào đây -->
-                    <div class="botMessage">Xin chào! Tôi có thể giúp gì cho bạn?</div>
-                </div>
-            </div>
-            <div id="chatInput">
-                <input type="text" id="userMessage" placeholder="Gõ vào đây và nhấn enter..." />
-                <button onclick="sendMessage()">Gửi</button>
-            </div>
-        </div>
+         <script>
+             async function sendMessage() {
+                 const userInput = document.getElementById('userMessage');
+                 const message = userInput.value;
 
-        <script>
-            async function sendMessage() {
-                const userInput = document.getElementById('userMessage');
-                const message = userInput.value;
+                 if (message.trim() === "") {
+                     return;
+                 }
 
-                if (message.trim() === "") {
-                    return;
-                }
+                 // Hiển thị tin nhắn của người dùng
+                 const userMessageDiv = document.createElement('div');
+                 userMessageDiv.classList.add('userMessage');
+                 userMessageDiv.textContent = message;
+                 document.getElementById('chatMessages').appendChild(userMessageDiv);
 
-                // Hiển thị tin nhắn của người dùng
-                const userMessageDiv = document.createElement('div');
-                userMessageDiv.classList.add('userMessage');
-                userMessageDiv.textContent = message;
-                document.getElementById('chatMessages').appendChild(userMessageDiv);
+                 // Xóa tin nhắn khỏi ô nhập
+                 userInput.value = '';
 
-                // Xóa tin nhắn khỏi ô nhập
-                userInput.value = '';
+                 // Gửi tin nhắn đến API chatbot
+                 try {
+                     const response = await fetch('https://localhost:7099/api/messages', { // Thay thế bằng URL endpoint thật của bạn
+                         method: 'POST',
+                         headers: {
+                             'Content-Type': 'application/json'
+                         },
+                         body: JSON.stringify({
+                             type: "message",
+                             from: { id: "user1" },
+                             text: message,
+                             locale: "vi-VN"
+                         })
+                     });
 
-                // Gửi tin nhắn đến API chatbot
-                try {
-                    const response = await fetch('https://localhost:7099/api/messages', { // Thay thế bằng URL endpoint thật của bạn
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            type: "message",
-                            from: { id: "user1" },
-                            text: message,
-                            locale: "vi-VN"
-                        })
-                    });
+                     // Đọc phản hồi từ bot
+                     const botMessage = await response.text(); // Thay đổi để lấy response từ API của Bot Framework
+                     const botMessageDiv = document.createElement('div');
+                     botMessageDiv.classList.add('botMessage');
+                     botMessageDiv.textContent = botMessage;
+                     document.getElementById('chatMessages').appendChild(botMessageDiv);
+                 } catch (error) {
+                     console.error('Error:', error);
+                     const errorMessageDiv = document.createElement('div');
+                     errorMessageDiv.classList.add('botMessage');
+                     errorMessageDiv.textContent = 'Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.';
+                     document.getElementById('chatMessages').appendChild(errorMessageDiv);
+                 }
 
-                    // Đọc phản hồi từ bot
-                    const botMessage = await response.text(); // Thay đổi để lấy response từ API của Bot Framework
-                    const botMessageDiv = document.createElement('div');
-                    botMessageDiv.classList.add('botMessage');
-                    botMessageDiv.textContent = botMessage;
-                    document.getElementById('chatMessages').appendChild(botMessageDiv);
-                } catch (error) {
-                    console.error('Error:', error);
-                    const errorMessageDiv = document.createElement('div');
-                    errorMessageDiv.classList.add('botMessage');
-                    errorMessageDiv.textContent = 'Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.';
-                    document.getElementById('chatMessages').appendChild(errorMessageDiv);
-                }
+                 // Tự động cuộn xuống cuối của chat body khi có tin nhắn mới
+                 const chatBody = document.getElementById('chatBody');
+                 chatBody.scrollTop = chatBody.scrollHeight;
+             }
 
-                // Tự động cuộn xuống cuối của chat body khi có tin nhắn mới
-                const chatBody = document.getElementById('chatBody');
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
-
-        </script>
+         </script> *@
 
         <!-- Scroll To Top End Here -->
+        <div id="notification" class="notification hidden"></div>
+        <!-- Modal Xác Nhận Xóa sản phẩm -->
+        <div id="confirmModal" class="modal-confirm">
+            <div class="modal-content-confirm">
+                <span class="close-button-confirm" id="closeModal">&times;</span>
+                <h2>Xác Nhận</h2>
+                <p>Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng không?</p>
+                <button id="confirmYes" class="btn-confirm btn-success-confirm">Có</button>
+                <button id="confirmNo" class="btn-confirm btn-danger-confirm">Không</button>
+            </div>
+        </div>
+        <!-- Modal Xác Nhận Order -->
+        <div id="confirmModalOrder" class="modal-confirm">
+            <div class="modal-content-confirm">
+                <span class="close-button-confirm" id="closeModalOrder">&times;</span>
+                <h2>Xác Nhận</h2>
+                <p>Bạn xác nhận muốn đặt hàng</p>
+                <button id="confirmYesOrder" class="btn-confirm btn-success-confirm">Có</button>
+                <button id="confirmNoOrder" class="btn-confirm btn-danger-confirm">Không</button>
+            </div>
+        </div>
 
     </div>
 
@@ -1137,13 +1159,68 @@
     <script src="/assets//js/plugins/tippy.min.js"></script>
     <script src="/assets//js/plugins/ion.rangeSlider.min.js"></script>
     <script src="/assets//js/plugins/mailchimp-ajax.js"></script>
+<<<<<<< HEAD
+=======
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+>>>>>>> Dien
     <!-- Minify Version -->
     <!-- <script src="/assets//js/vendor.min.js"></script> -->
     <!-- <script src="/assets//js/plugins.min.js"></script> -->
     <!--Main JS (Common Activation Codes)-->
     <script src="/assets//js/main.js"></script>
     <!-- <script src="/assets//js/main.min.js"></script> -->
+<<<<<<< HEAD
  
+=======
+    <script>
+        $(document).ready(function () {
+            updateCartCount(); // Gọi hàm này khi trang được tải
+        });
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+
+            // Thiết lập màu nền dựa trên loại thông báo
+            if (type === 'success') {
+                notification.style.backgroundColor = '#4CAF50'; // Xanh lá cây
+            } else if (type === 'error') {
+                notification.style.backgroundColor = '#f44336'; // Đỏ
+            }
+
+            // Hiển thị thông báo
+            notification.classList.remove('hidden');
+            notification.classList.add('show');
+
+            // Ẩn thông báo sau 3 giây
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 300); // Thời gian khử hiệu ứng
+            }, 3000); // Thời gian hiển thị thông báo
+        }
+
+        function updateCartCount() {
+            // Gửi yêu cầu đến server để đếm số lượng cart
+            $.ajax({
+                url: '/Cart/GetCartCount', // Đường dẫn đến action để lấy số lượng cart
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        // Cập nhật số lượng trong giỏ hàng
+                        $('.minicart-wrap .quantity').text(response.count);
+                    } else {
+                        console.error("Không thể lấy số lượng cart.");
+                    }
+                },
+                error: function () {
+                    console.error("Có lỗi xảy ra khi lấy số lượng cart.");
+                }
+            });
+        }
+    </script>
+
+>>>>>>> Dien
 </body>
 
 </html>

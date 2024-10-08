@@ -7,6 +7,6 @@
 		public float Price { get; set; }
 		public int Order_Id { get; set; }
 		public int Provar_Id { get; set; }
-		public int Topping_Id { get; set; }
+		public List<int> Topping_Id { get; set; }
 	}
 }
