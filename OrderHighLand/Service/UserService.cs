@@ -81,13 +81,13 @@ namespace OrderHighLand.Service
                 var result = await session.ExecuteWriteAsync(async transaction =>
                 {
                     var createQuery = @"
-            CREATE (a:Account {
-                Id: $A_ID,
-                Name: $A_NAME,    
-                Email: $A_EMAIL,   
-                Password: $A_PASSWORD,
-                Role_Id: 2  // Default to regular user role
-            }) RETURN a";
+                        CREATE (a:Account {
+                            Id: $A_ID,
+                            Name: $A_NAME,    
+                            Email: $A_EMAIL,   
+                            Password: $A_PASSWORD,
+                            Role_Id: 2  // Default to regular user role
+                        }) RETURN a";
 
                     var createParams = new
                     {

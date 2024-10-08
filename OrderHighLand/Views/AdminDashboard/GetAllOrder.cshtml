@@ -1,0 +1,64 @@
+﻿@model IEnumerable<OrderHighLand.Models.Orders>
+@{
+	Layout = "_AdminLayout";
+}
+
+<section class="section">
+
+	<div class="section-header">
+		<h1>Order</h1>
+	</div>
+	<div class="section-body">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h4>All Orders</h4>
+					</div>
+					<div class="card-body">
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>Order ID</th>
+									<th>Order Date</th>
+									<th>Order Status</th>
+									<th>Order Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var item in Model)
+								{
+									<tr>
+										<td>@item.Id</td>
+										<td>@item.Date</td>
+										<td>
+											@if (item.Status == "Pending")
+											{
+												<p class="text-warning">Pending</p>
+											}
+											else if (item.Status == "delivered")
+											{
+												<p class="text-success">Complete</p>
+											}
+											else
+											{
+												<p class="text-danger">Cancel</p>
+											}
+										</td>
+										<td>
+											<a href="@Url.Action("Detail", "AdminDashboard", new { id = item.Id })" class="btn btn-primary">
+												<i class="fas fa-eye"></i>
+											</a>
+											<a href="@Url.Action("Delete", "AdminDashboard", new { id = item.Id })" class="btn btn-danger delete-item"> <i class="far fa-trash-alt"></i></a>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</section>

@@ -244,9 +244,9 @@ namespace OrderHighLand.Service
 
 					// Tạo liên kết đến Category
 					var createRelationQuery = @"
-                MATCH (p:Product {Id: $PRO_ID})
-                MATCH (c:Category {Id: $CATE_ID})
-                CREATE (p)-[:BELONGS_TO]->(c)";
+						MATCH (p:Product {Id: $PRO_ID})
+						MATCH (c:Category {Id: $CATE_ID})
+						CREATE (p)-[:BELONGS_TO]->(c)";
 
 					var createRelationParams = new
 					{
@@ -392,13 +392,11 @@ namespace OrderHighLand.Service
 			{
 				var result = await session.ExecuteReadAsync(async transaction =>
 				{
-					// Truy vấn lấy Product, ProductVariant và Sizes
 					var readQuery = @"
 						MATCH (p:Product {Slug: $slug})
 						OPTIONAL MATCH (p)<-[:VARIANT_OF]-(pv:ProductVariant)-[:HAS_SIZE]->(s:Size)
 						OPTIONAL MATCH (p)-[:BELONGS_TO]->(c:Category)
 						RETURN p, collect(pv) AS variants, collect(s) AS sizes, collect(c) AS categories LIMIT 1";
-
 
 					var cursor = await transaction.RunAsync(readQuery, new { slug });
 

@@ -4,11 +4,11 @@ using OrderHighLand.Service;
 
 namespace OrderHighLand.Controllers.Admin
 {
-	public class AccountsController : Controller
+	public class AAccountsController : Controller
 	{
 		private readonly AccountService _accountService;
 		private readonly RoleService _roleService;
-		public AccountsController(AccountService accountService, RoleService roleService)
+		public AAccountsController(AccountService accountService, RoleService roleService)
         {
 			_accountService = accountService;
 			_roleService = roleService;
@@ -22,8 +22,7 @@ namespace OrderHighLand.Controllers.Admin
 				accounts = accounts,
 				roles = role
 			};
-			return View(accounts);
+			return View(accountRoleVM);
 		}
-
 	}
 }
