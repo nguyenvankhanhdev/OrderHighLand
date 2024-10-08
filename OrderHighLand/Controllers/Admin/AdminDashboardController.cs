@@ -1,24 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderHighLand.Controllers.User;
+using OrderHighLand.Models;
+using OrderHighLand.Models.VM;
 using OrderHighLand.Service;
 
 namespace OrderHighLand.Controllers.Admin
 {
 	public class AdminDashboardController : Controller
     {
+        private readonly DashboardService _dashboardService;
+        private readonly AccountService _accountService;
+		public AdminDashboardController(DashboardService dashboardService)
+        {
+            _dashboardService = dashboardService;
+        }
 
-		public IActionResult Index()
+        public async Task<IActionResult> Index()
 		{
-			return View();
+			var totalUser = await _dashboardService.GetToTalUser();
+            var totalOrder = await _dashboardService.getTotalOrder();
+            var totalOrderToday = await _dashboardService.getTotalAmountToday();
+            var getOrderToday = await _dashboardService.getOrderToday();
+            var getTotalOrderMonth = await _dashboardService.getTotalOrderMonth();
+            var getTotalOrderYear = await _dashboardService.getTotalOrderYear();
+            var totalCate = await _dashboardService.getTotalCategory();
+            var totalProduct = await _dashboardService.getTotalProduct();
+            var getOrderPending = await _dashboardService.getOrderPending();
+            var getOrderCancel = await _dashboardService.getOrderCancel();
+            ViewBag.TotalUser = totalUser;
+            ViewBag.TotalOrder = totalOrder;
+            ViewBag.TotalOrderToday = totalOrderToday;
+            ViewBag.GetOrderToday = getOrderToday;
+            ViewBag.GetTotalOrderMonth = getTotalOrderMonth;
+            ViewBag.GetTotalOrderYear = getTotalOrderYear;
+            ViewBag.GetTotalCate = totalCate;
+            ViewBag.GetTotalProduct = totalProduct;
+            ViewBag.GetOrderPending = getOrderPending;
+            ViewBag.GetOrderCancel = getOrderCancel;
+            return View();
 		}
-		private readonly ILogger<HomeController> _logger;
-
-		public AdminDashboardController(ILogger<HomeController> logger)
+        public async Task<IActionResult> GetAllOrder()
 		{
-			_logger = logger;
-			
+            var order =  await _dashboardService.GetOrders();
+			return View(order);
 		}
-
-		
-    }
+		public async Task<IActionResult> GetAllOrderPending()
+		{
+			var orderPending = await _dashboardService.GetAllOrderPending();
+			return View(orderPending);
+		}
+	}
 }

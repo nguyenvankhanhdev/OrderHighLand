@@ -244,9 +244,9 @@ namespace OrderHighLand.Service
 
 					// Tạo liên kết đến Category
 					var createRelationQuery = @"
-                MATCH (p:Product {Id: $PRO_ID})
-                MATCH (c:Category {Id: $CATE_ID})
-                CREATE (p)-[:BELONGS_TO]->(c)";
+						MATCH (p:Product {Id: $PRO_ID})
+						MATCH (c:Category {Id: $CATE_ID})
+						CREATE (p)-[:BELONGS_TO]->(c)";
 
 					var createRelationParams = new
 					{
@@ -387,39 +387,37 @@ namespace OrderHighLand.Service
 		}
 
 
-		public async Task<List<Products>> getProductBySlug(string slug)
-		{
-			var query = @"MATCH (p:Product {Slug: $slug}) RETURN p";
+        public async Task<List<Products>> getProductBySlug(string slug)
+        {
+            var query = @"MATCH (p:Product {Slug: $slug}) RETURN p";
 
-			try
-			{
-				var session = _driver.AsyncSession();
-				var result = await session.RunAsync(query, new { slug });
-				var products = new List<Products>();
-				await result.ForEachAsync(record =>
-				{
-					var node = record["p"].As<INode>();
-					var product = new Products
-					{
-						Id = node.Properties["Id"].As<int>(),
-						Name = node.Properties["Name"].As<string>(),
-						Image = node.Properties["Image"].As<string>(),
-						Type = node.Properties["Type"].As<string>(),
-						Cate_Id = node.Properties["Cate_Id"].As<int>(),
-						Slug = node.Properties["Slug"].As<string>()
-					};
-					products.Add(product);
-				});
-				return products;
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Lỗi: {ex.Message}");
-				return new List<Products>();
-			}
-		}
-
-        // Phương thức lấy giá sản phẩm dựa trên tên sản phẩm và kích thước
+            try
+            {
+                var session = _driver.AsyncSession();
+                var result = await session.RunAsync(query, new { slug });
+                var products = new List<Products>();
+                await result.ForEachAsync(record =>
+                {
+                    var node = record["p"].As<INode>();
+                    var product = new Products
+                    {
+                        Id = node.Properties["Id"].As<int>(),
+                        Name = node.Properties["Name"].As<string>(),
+                        Image = node.Properties["Image"].As<string>(),
+                        Type = node.Properties["Type"].As<string>(),
+                        Cate_Id = node.Properties["Cate_Id"].As<int>(),
+                        Slug = node.Properties["Slug"].As<string>()
+                    };
+                    products.Add(product);
+                });
+                return products;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return new List<Products>();
+            }
+        }
         public async Task<string> GetProductPriceAsync(string productName, string size)
         {
             var session = _driver.AsyncSession();

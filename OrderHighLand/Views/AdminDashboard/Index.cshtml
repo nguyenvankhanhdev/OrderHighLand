@@ -1,4 +1,194 @@
 ﻿@{
-    Layout = "_AdminLayout";
+	Layout = "_AdminLayout";
 }
+<section class="section">
+	<div class="section-header">
+		<h1>Dashboard</h1>
+	</div>
+	<div class="row">
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-primary">
+						<i class="fas fa-cart-plus"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>Todays Orders</h4>
+						</div>
+						<div class="card-body">
+							@ViewBag.GetOrderToday
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-primary">
+						<i class="fas fa-cart-plus"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>Total Orders</h4>
+						</div>
+						<div class="card-body">
+							@string.Format("{0:#,##0}", ViewBag.TotalOrder).Replace(",", ".")đ
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-danger">
+						<i class="fas fa-cart-plus"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>Total Complelte Orders</h4>
+						</div>
+						<div class="card-body">
+							@ViewBag.GetOrderPending
+						</div>
+					</div>
+				</div>
+			
+		</div>
+
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+
+			<div class="card card-statistic-1">
+				<div class="card-icon bg-danger">
+					<i class="fas fa-cart-plus"></i>
+				</div>
+				<div class="card-wrap">
+					<div class="card-header">
+						<h4>Total Canceled Orders</h4>
+					</div>
+					<div class="card-body">
+						@ViewBag.GetOrderCancel
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-danger">
+						<i class="fas fa-money-bill-alt"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>Todays Earnings</h4>
+						</div>
+						<div class="card-body">
+							@string.Format("{0:#,##0}", ViewBag.TotalOrderToday).Replace(",", ".")đ
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-danger">
+						<i class="fas fa-money-bill-alt"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>This Month Earnings</h4>
+						</div>
+						<div class="card-body">
+							@string.Format("{0:#,##0}", ViewBag.GetTotalOrderMonth).Replace(",", ".")đ
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-info">
+						<i class="fas fa-money-bill-alt"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>This Years Earnings</h4>
+						</div>
+						<div class="card-body">
+							@string.Format("{0:#,##0}", ViewBag.GetTotalOrderYear).Replace(",", ".")đ
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-info">
+						<i class="fas fa-list"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>Total Categories</h4>
+						</div>
+						<div class="card-body">
+							@ViewBag.GetTotalCate
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="@Url.Action("Index","AProduct")">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-info">
+						<i class="fas fa-copyright"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>Total Products</h4>
+						</div>
+						<div class="card-body">
+							@ViewBag.GetTotalProduct
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+		<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+			<a href="@Url.Action("Index","AAccounts")">
+				<div class="card card-statistic-1">
+					<div class="card-icon bg-warning">
+						<i class="far fa-file"></i>
+					</div>
+					<div class="card-wrap">
+						<div class="card-header">
+							<h4>Total Users</h4>
+						</div>
+						<div class="card-body">
+							@ViewBag.TotalUser
+						</div>
+					</div>
+				</div>
+			</a>
+		</div>
+
+	</div>
+
+</section>
+
+
+
+
+
 

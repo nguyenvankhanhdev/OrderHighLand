@@ -57,7 +57,6 @@ namespace OrderHighLand.Service
                 {
                     var product = new ProductVariant
                     {
-
                         Id = record["Id"].As<int>(),
                         Pro_Id = record["Pro_Id"].As<int>(),
                         Size_Id = record["Size_Id"].As<int>(),

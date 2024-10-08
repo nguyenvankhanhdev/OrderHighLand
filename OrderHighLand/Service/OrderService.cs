@@ -70,12 +70,10 @@ namespace OrderHighLand.Service
             try
             {
                 var session = _driver.AsyncSession();
-
-                // Tạo dictionary chứa các tham số
                 var parameters = new Dictionary<string, object>
                 {
                     { "Id", order.Id },
-                    { "Date", order.Date.ToString("yyyy-MM-ddTHH:mm:ss") }, // Chuyển đổi DateTime sang chuỗi
+                    { "Date", order.Date.ToString("yyyy-MM-ddTHH:mm:ss") },
                     { "Status", order.Status },
                     { "TotalPrice", order.TotalPrice },
                     { "Address_Id", order.Address_Id },
