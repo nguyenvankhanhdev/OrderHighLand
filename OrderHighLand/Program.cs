@@ -8,7 +8,7 @@ builder.Services.AddSingleton<IDriver>(provider =>
 
 	var uri = "bolt://localhost:7687"; 
 	var user = "neo4j";
-	var password = "12345678";
+	var password = "123456789";
 
 	return GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
 });
@@ -24,9 +24,10 @@ builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<SizeService>();
 builder.Services.AddSingleton<ProductVartiantService>();
 builder.Services.AddSingleton<ProductVariantService>();
-
-
-
+builder.Services.AddSingleton<ToppingService>();
+builder.Services.AddSingleton<CartService>();
+builder.Services.AddSingleton<AddressService>();
+builder.Services.AddSingleton<OrderService>();
 
 var app = builder.Build();
 

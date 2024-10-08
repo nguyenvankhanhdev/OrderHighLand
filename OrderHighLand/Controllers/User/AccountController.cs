@@ -61,6 +61,7 @@ namespace OrderHighLand.Controllers.User
                 HttpContext.Session.SetString("UserEmail", user.A_EMAIL);
                 HttpContext.Session.SetString("RoleId", user.ROLE_ID.ToString());
 
+              
                 return RedirectToAction("Index", "Home");
             }
 

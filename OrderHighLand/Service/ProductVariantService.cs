@@ -10,7 +10,37 @@ namespace OrderHighLand.Service
         {
             _driver = driver;
         }
+        public async Task<int> getProvarByProIdAndSizeId(int Pro_Id,int Size_Id)
+        {
+            var query = @"
+                        MATCH (pv:ProductVariant)
+                        WHERE pv.Pro_Id = $Pro_Id AND pv.Size_Id = $Size_Id
+                        RETURN pv.Id as Id";
 
+            try
+            {
+                using var session = _driver.AsyncSession();
+
+                var result = await session.RunAsync(query, new { Pro_Id, Size_Id });
+
+                // Chuyển kết quả về danh sách
+                var records = await result.ToListAsync();
+
+                if (records.Count == 1) // Đảm bảo chỉ có 1 kết quả
+                {
+                    return records[0]["Id"].As<int>();
+                }
+                else
+                {
+                    return -1; // Không tìm thấy hoặc có nhiều hơn 1 kết quả
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return -1;
+            }
+        }
         public async Task<List<ProductVariant>> getAllProductVariants()
         {
             var query = @"MATCH(s:ProductVariant)
