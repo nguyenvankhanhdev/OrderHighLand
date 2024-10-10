@@ -27,7 +27,6 @@ builder.Services.AddSession(options =>
 builder.Services.AddSession();
 builder.Services.AddSingleton<AccountService>();
 
-builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<RoleService>();
 builder.Services.AddScoped<UserService>();
@@ -51,6 +50,7 @@ builder.Services.AddCors(options =>
 });
 
 
+
 builder.Services.AddSingleton<ToppingService>();
 builder.Services.AddSingleton<CartService>();
 builder.Services.AddSingleton<AddressService>();
@@ -67,7 +67,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseSession();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("AllowAllOrigins");
 

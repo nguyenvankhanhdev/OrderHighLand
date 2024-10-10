@@ -13,12 +13,24 @@ namespace OrderHighLand.Service
         // Hàm xử lý tin nhắn từ người dùng và phản hồi
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(turnContext.Activity.ServiceUrl))
+
+           
+
+
+            try
             {
-                // Log lỗi hoặc gửi phản hồi thông báo ServiceUrl không hợp lệ
-                Console.WriteLine("ServiceUrl is null or empty.");
-                throw new ArgumentNullException(nameof(turnContext.Activity.ServiceUrl), "ServiceUrl cannot be null or empty.");
+                // Log để kiểm tra nội dung tin nhắn nhận được
+                Console.WriteLine("Processing message: " + turnContext.Activity.Text);
+
+                // Trả lời tin nhắn
+                var replyText = $"You said: {turnContext.Activity.Text}";
+                await turnContext.SendActivityAsync(MessageFactory.Text(replyText), cancellationToken);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in OnMessageActivityAsync: {ex.Message}");
+            }
+
             try
             {
                 string userMessage = turnContext.Activity.Text.ToLower().Trim(); 

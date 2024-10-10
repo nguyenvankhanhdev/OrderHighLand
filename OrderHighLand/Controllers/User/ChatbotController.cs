@@ -20,7 +20,19 @@ namespace OrderHighLand.Controllers.User
         [HttpPost]
         public async Task PostAsync()
         {
-            await _adapter.ProcessAsync(Request, Response, _bot);
+            try
+            {
+                Console.WriteLine("Received a POST request at /api/messages");
+                await _adapter.ProcessAsync(Request, Response, _bot);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi chi tiết
+                Console.WriteLine($"Error processing the request: {ex.Message}");
+                Console.WriteLine(ex.StackTrace); // Thêm log chi tiết StackTrace để biết nguyên nhân
+                Response.StatusCode = 500;
+                await Response.WriteAsync("Error processing the request.");
+            }
         }
 
     }
