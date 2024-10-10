@@ -157,25 +157,38 @@ namespace OrderHighLand.Service
 
 		}
 
-		// Lấy Id lớn nhất của Product
-		private int getIdMax()
-		{
-			var session = _driver.AsyncSession();
-			var result = session.ExecuteReadAsync(async transaction =>
-			{
-				var readQuery = "MATCH (p:Product) RETURN max(p.Id) as max";
-				var readResult = await transaction.RunAsync(readQuery);
-				var products = await readResult.ToListAsync(record =>
-				{
-					var node = record["max"].As<int>();
-					return node;
-				});
-				return products;
-			});
-			session.CloseAsync();
-			return result.Result[0];
-		}
-		public async Task<Products> CreateAsync(Products product)
+        // Lấy Id lớn nhất của Product
+        private async Task<int> GetIdMaxAsync()
+        {
+            // Open the session
+            var session = _driver.AsyncSession();
+
+            try
+            {
+                // Execute the transaction
+                var result = await session.ExecuteReadAsync(async transaction =>
+                {
+                    // Define the query
+                    var readQuery = "MATCH (p:Product) RETURN max(p.Id) as max";
+
+                    // Run the query
+                    var readResult = await transaction.RunAsync(readQuery);
+
+                    // Retrieve the max value
+                    var record = await readResult.SingleAsync();
+                    return record["max"].As<int>();
+                });
+
+                return result;
+            }
+            finally
+            {
+                // Always ensure the session is closed
+                await session.CloseAsync();
+            }
+        }
+
+        public async Task<Products> CreateAsync(Products product)
 		{
 			var session = _driver.AsyncSession();
 			try
@@ -183,50 +196,33 @@ namespace OrderHighLand.Service
 				var result = await session.ExecuteWriteAsync(async transaction =>
 				{
 
-					var newProductId = getIdMax() + 1;
+                    var newProductId = await GetIdMaxAsync() + 1;
 					var productSlug = GenerateSlug(product.Name);
 
 					var createQuery = @"
-					CREATE (p:Product {
-                    Id: $Id, 
-                    Name: $Name, 
-                    Slug: $Slug, 
-                    Image: $Image,
-					Type: $Type,
-                    Cate_Id: $Cate_Id 
-                })
-                RETURN p";
-					// Tạo sản phẩm mới
-					var createProductQuery = @"
-						CREATE (p:Product {
-							Id: $PRO_ID, 
-							Name: $PRO_NAME, 
-							Slug: $PRO_SLUG, 
-							Image: $PRO_IMAGE,
-							Cate_Id: $CATE_ID
-
+							CREATE (p:Product {
+							Id: $Id, 
+							Name: $Name, 
+							Slug: $Slug, 
+							Image: $Image,
+							Type: $Type,
+							Cate_Id: $Cate_Id 
 						})
 						RETURN p";
 
 					var createProductParams = new
 					{
 
-						PRO_ID = newProductId,
-						PRO_NAME = product.Name,
-						PRO_SLUG = productSlug,
-						PRO_IMAGE = product.Image,
-						CATE_ID = product.Cate_Id,
-
-						Id = getIdMax() + 1, // Giả sử hàm getIdMax() trả về ID lớn nhất hiện có
+						Id = await GetIdMaxAsync() + 1, // Giả sử hàm getIdMax() trả về ID lớn nhất hiện có
 						Name = product.Name,
-						Slug = product.Slug,
+						Slug = productSlug,
 						Image = product.Image,
 						Type = product.Type,
 						Cate_Id = product.Cate_Id
 
 					};
 
-					var createResult = await transaction.RunAsync(createProductQuery, createProductParams);
+					var createResult = await transaction.RunAsync(createQuery, createProductParams);
 
 					var createdProduct = await createResult.SingleAsync(record =>
 					{

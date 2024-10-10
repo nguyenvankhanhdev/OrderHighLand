@@ -332,7 +332,7 @@ namespace OrderHighLand.Service
 			});
 			await session.CloseAsync();
 			return orders;
-			
+
 
 		}
 		public async Task<List<Orders>> GetAllOrderCancel()
@@ -386,6 +386,58 @@ namespace OrderHighLand.Service
 			return orders;
 
 		}
+		public async Task<Orders> GetOrderAsyncById(int id)
+		{
+			var session = _driver.AsyncSession();
 
+			var orders = await session.ExecuteReadAsync(async transaction =>
+			{
+				var readQuery = "MATCH (p:Order) WHERE p.Id = $id RETURN p";
+				var readResult = await transaction.RunAsync(readQuery, new { id });
+				var order = await readResult.SingleAsync(record =>
+				{
+					var product = record["p"].As<INode>().Properties;
+					return new Orders
+					{
+						Id = product["Id"].As<int>(),
+						Status = product["Status"].As<string>(),
+					};
+				});
+				return order;
+			});
+			await session.CloseAsync();
+			return orders;
+		}
+		public async Task<Orders> ChangeOrderStatus(int id,string status)
+		{
+			var session = _driver.AsyncSession();
+			try
+			{
+				var order = await session.ExecuteWriteAsync(async transaction =>
+				{
+					var writeQuery = "MATCH (o:Order) WHERE o.Id = $id SET o.Status = $status RETURN o";
+					var writeResult = await transaction.RunAsync(writeQuery, new { id, status });
+					var order = await writeResult.SingleAsync(record =>
+					{
+						var order = record["o"].As<INode>().Properties;
+						return new Orders
+						{
+							Id = order["Id"].As<int>(),
+							Status = order["Status"].As<string>(),
+						};
+					});
+					return order;
+				});
+				return order;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				await session.CloseAsync();
+			}
+		}
 	}
 }

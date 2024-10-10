@@ -54,9 +54,7 @@ namespace OrderHighLand.Controllers.Admin
             return View();
         }
         [HttpPost]
-
         public async Task<IActionResult> Create(Sizes size)
-
         {
             await _sizeService.CreateAsync(size);
             return Json(new { status = "success", message = "Size created successfully!" });
