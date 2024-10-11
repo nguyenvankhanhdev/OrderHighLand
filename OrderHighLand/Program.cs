@@ -26,7 +26,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddSession();
 builder.Services.AddSingleton<AccountService>();
-
+builder.Services.AddSingleton<DashboardService>();
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<RoleService>();
