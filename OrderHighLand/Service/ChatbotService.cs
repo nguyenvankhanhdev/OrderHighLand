@@ -13,10 +13,6 @@ namespace OrderHighLand.Service
         // Hàm xử lý tin nhắn từ người dùng và phản hồi
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-
-           
-
-
             try
             {
                 // Log để kiểm tra nội dung tin nhắn nhận được

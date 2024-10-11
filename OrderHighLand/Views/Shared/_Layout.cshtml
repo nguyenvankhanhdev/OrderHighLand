@@ -1094,13 +1094,18 @@
                     const response = await fetch('http://localhost:5135/api/messages', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json', // Đảm bảo Content-Type là JSON
+                            'Content-Type': 'application/json', // Đảm bảo đúng Content-Type
                         },
                         body: JSON.stringify({
-                            type: 'message', // Định dạng kiểu message
-                            text: message     // Nội dung tin nhắn
+                            type: 'message',
+                            text: message
                         }),
                     });
+                    console.log(JSON.stringify({
+                        type: 'message',
+                        text: message
+                    }));
+                    console.log('Response from server:', response);
 
                     if (!response.ok) {
                         throw new Error(`Server error: ${response.status}, ${response.statusText}`);

@@ -35,7 +35,7 @@ builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<SizeService>();
 builder.Services.AddSingleton<ProductVartiantService>();
 builder.Services.AddSingleton<ProductVariantService>();
-
+builder.Services.AddScoped<ProductService>();
 
 
 // Đăng ký bot với dependency injection
@@ -65,11 +65,11 @@ if (!app.Environment.IsDevelopment())
 	app.UseExceptionHandler("/Home/Error");
 	app.UseHsts();
 }
-
+app.UseCors("AllowAllOrigins");
 app.UseSession();
 //app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseCors("AllowAllOrigins");
+
 
 app.UseRouting();
 

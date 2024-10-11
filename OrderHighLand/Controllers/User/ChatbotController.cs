@@ -23,7 +23,11 @@ namespace OrderHighLand.Controllers.User
             try
             {
                 Console.WriteLine("Received a POST request at /api/messages");
+                Console.WriteLine($"Request Body: {await new StreamReader(Request.Body).ReadToEndAsync()}");
+
                 await _adapter.ProcessAsync(Request, Response, _bot);
+               
+
             }
             catch (Exception ex)
             {
