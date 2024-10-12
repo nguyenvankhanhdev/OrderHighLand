@@ -27,16 +27,15 @@ builder.Services.AddSession(options =>
 builder.Services.AddSession();
 builder.Services.AddSingleton<AccountService>();
 builder.Services.AddSingleton<DashboardService>();
-builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<RoleService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ConnecNeo4J>();
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<SizeService>();
 builder.Services.AddSingleton<ProductVartiantService>();
 builder.Services.AddSingleton<ProductVariantService>();
-builder.Services.AddScoped<ProductService>();
+builder.Services.AddSingleton<ProductService>();
 
 
 // Đăng ký bot với dependency injection
