@@ -8,26 +8,26 @@
                 <table class="table table-hover table-bordered text-center shadow-lg rounded" style="background-color: #f8f9fa;">
                     <thead class="thead-light">
                         <tr>
-                            <th>Order Detail ID</th>
+                          @*   <th>Order Detail ID</th> *@
                             <th>Product Image</th>
                             <th>Product Name</th>
                             <th>Quantity</th>
-                            <th>Price</th>
                             <th>Toppings</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var detail in Model)
                         {
                             <tr>
-                                <td class="align-middle">@detail.Id</td>
+                              @*   <td class="align-middle">@detail.Id</td> *@
                                 <td class="align-middle">
                                     <img src="~/imgs/@detail.ProductImage" alt="@detail.ProductName" style="max-width: 80px; height: auto; border-radius: 8px; object-fit: cover;" />
                                 </td>
                                 <td class="align-middle">@detail.ProductName</td>
-                                <td class="align-middle">@detail.Quantity</td>
-                                <td class="align-middle">@detail.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</td>
+                                <td class="align-middle">@detail.Quantity</td>         
                                 <td class="align-middle">@string.Join(", ", detail.Toppings)</td>
+                                <td class="align-middle">@detail.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</td>
                             </tr>
                         }
                     </tbody>
