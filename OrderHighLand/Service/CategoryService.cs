@@ -1,15 +1,15 @@
 ﻿using Neo4j.Driver;
 using OrderHighLand.Models;
-
-
 namespace OrderHighLand.Service
 {
 	public class CategoryService
 	{
 		private readonly IDriver _driver;
-		public CategoryService(IDriver driver)
+		private readonly ProductService _productService;
+		public CategoryService(IDriver driver, ProductService productService)
 		{
 			_driver = driver;
+			_productService = productService;
 		}
 		public async Task<List<Models.Category>> GetAllAsync()
 		{
@@ -101,6 +101,74 @@ namespace OrderHighLand.Service
 			}
 			return categoryCount;
 		}
+
+		public async Task<Models.Category> CreateAsync(Models.Category category)
+		{
+			var session = _driver.AsyncSession();
+			var result = await session.ExecuteWriteAsync(async transaction =>
+			{
+				var createQuery = @"CREATE (c:Category {Id: $Id, Name: $Name, Slug: $Slug})";
+				var generateSlug = _productService.GenerateSlug(category.Name);
+				var createResult = await transaction.RunAsync(createQuery, new
+				{
+					Id = getIdMax() + 1,
+					Name = category.Name,
+					Slug = generateSlug 
+				});
+				return await createResult.ConsumeAsync(); 
+			});
+			await session.CloseAsync();
+			return category;
+		}
+		public async Task<Models.Category> GetByIdAsync(int id)
+		{
+			var session = _driver.AsyncSession();
+			var result = await session.ExecuteReadAsync(async transaction =>
+			{
+				var readQuery = "MATCH (c:Category {Id: $Id}) RETURN c";
+				var readResult = await transaction.RunAsync(readQuery, new { Id = id });
+				var category = await readResult.SingleAsync(record =>
+				{
+					var node = record["c"].As<INode>();
+					return new Models.Category
+					{
+						Id = node.Properties["Id"].As<int>(),
+						Name = node.Properties["Name"].As<string>(),
+						Slug = node.Properties["Slug"].As<string>(),
+					};
+				});
+				return category;
+			});
+			await session.CloseAsync();
+			return result;
+		}
+		public async Task<Models.Category> UpdateAsync(int id,Models.Category category)
+		{
+			var session = _driver.AsyncSession();
+			var result = await session.ExecuteWriteAsync(async transaction =>
+			{
+				var updateQuery = "MATCH (c:Category {Id: $Id}) SET c.Name = $Name, c.Slug = $Slug";
+				var generateSlug = _productService.GenerateSlug(category.Name);
+				var updateResult = await transaction.RunAsync(updateQuery, new { Id = id, Name = category.Name, Slug = generateSlug });
+				return await updateResult.SingleAsync();
+			});
+			await session.CloseAsync();
+			return category;
+
+		}
+		public async Task DeleteAsync(int id)
+		{
+			var session = _driver.AsyncSession();
+			var result = await session.ExecuteWriteAsync(async transaction =>
+			{
+				var deleteQuery = "MATCH (c:Category {Id: $Id}) DETACH DELETE c";
+				var deleteResult = await transaction.RunAsync(deleteQuery, new { Id = id });
+				return await deleteResult.SingleAsync();
+			});
+			await session.CloseAsync();
+		}
+
+
 
 
 	}

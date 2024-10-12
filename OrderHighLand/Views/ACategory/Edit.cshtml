@@ -1,0 +1,69 @@
+﻿@model OrderHighLand.Models.Category
+@{
+	Layout = "_AdminLayout";
+}
+<section class="section">
+	<div class="section-header">
+		<h1>Update Category</h1>
+	</div>
+	<div class="section-body">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+					</div>
+					<div class="card-body">
+						<form id="categoryForm" class="form" enctype="multipart/form-data">
+							<!-- Hidden field to store Product Id -->
+							<input type="hidden" name="Id" value="@Model.Id" />
+							<div class="form-group">
+								<label>Name</label>
+								<input type="text" class="form-control" name="Name" value="@Model.Name">
+							</div>
+							<button type="submit" class="btn btn-primary">Update</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$('#categoryForm').on('submit', function (e) {
+				e.preventDefault();
+				var formData = new FormData(this);
+				$.ajax({
+					url: '@Url.Action("Edit", "ACategory", new { id = Model.Id })',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (response) {
+						Swal.fire(
+							'Success!',
+							'Category updated successfully!',
+							'success'
+						).then(function () {
+							window.location.href = '@Url.Action("Index", "ACategory")';
+						});
+					},
+					error: function (xhr, status, error) {
+						Swal.fire(
+							'Error!',
+							'There was an error updating the category.',
+							'error'
+						);
+					}
+				});
+			});
+		});
+	</script>
+}
+
+
+
+
+

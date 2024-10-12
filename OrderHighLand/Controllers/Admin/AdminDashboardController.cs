@@ -10,10 +10,11 @@ namespace OrderHighLand.Controllers.Admin
     {
         private readonly DashboardService _dashboardService;
         private readonly AccountService _accountService;
-		public AdminDashboardController(DashboardService dashboardService)
+		public AdminDashboardController(DashboardService dashboardService, AccountService accountService)
         {
             _dashboardService = dashboardService;
-        }
+			_accountService = accountService;
+		}
 
         public async Task<IActionResult> Index()
 		{
@@ -39,6 +40,7 @@ namespace OrderHighLand.Controllers.Admin
             ViewBag.GetOrderCancel = getOrderCancel;
             return View();
 		}
+
         public async Task<IActionResult> GetAllOrder()
 		{
             var order =  await _dashboardService.GetOrders();
@@ -49,5 +51,21 @@ namespace OrderHighLand.Controllers.Admin
 			var orderPending = await _dashboardService.GetAllOrderPending();
 			return View(orderPending);
 		}
+		[HttpPost]
+		public async Task<IActionResult> UpdateOrderStatus(int id, string status)
+		{
+			var order = await _dashboardService.ChangeOrderStatus(id, status);
+
+			if (order != null)
+			{
+				return Json(new { success = true, message = "Order status updated successfully." });
+			}
+			else
+			{
+				return Json(new { success = false, message = "Failed to update order status." });
+			}
+		}
+
+
 	}
 }

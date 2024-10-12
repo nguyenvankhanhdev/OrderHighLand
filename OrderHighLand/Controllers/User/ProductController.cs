@@ -29,8 +29,7 @@ namespace OrderHighLand.Controllers.User
         [Route("Product/Detail/{slug}")]
         public async Task<IActionResult> Detail(string slug)
         {
-            
-
+           
             var product = await _productService.getProductBySlug(slug);
             var allTopping = await toppingService.getAllTopping();
             var allSize = await connecNeo4J.getAllSize();

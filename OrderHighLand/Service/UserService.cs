@@ -71,64 +71,65 @@ namespace OrderHighLand.Service
             }
         }
 
-        public async Task<Accounts> RegisterAsync(Register model)
-        {
-            var session = _driver.AsyncSession();
-            try
-            {
-                var newUserId = await getMaxIdAsync() + 1;
-                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+		public async Task<Accounts> RegisterAsync(Register model)
+		{
+			var session = _driver.AsyncSession();
+			try
+			{
+				var newUserId = await getMaxIdAsync() + 1;
+				var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
-                var result = await session.ExecuteWriteAsync(async transaction =>
-                {
-                    var createQuery = @"
-                          CREATE (a:Account {
-                              Id: $A_ID,
-                              Name: $A_NAME,    
-                              Email: $A_EMAIL,   
-                              Password: $A_PASSWORD,
-                              Role_Id: 2  // Mặc định với Role_Id là 2
-                          })
-                          WITH a
-                          MATCH (r:Role {Id: a.Role_Id}) 
-                          CREATE (a)-[:HAS_ROLE]->(r) 
-                          RETURN a";
+				var result = await session.ExecuteWriteAsync(async transaction =>
+				{
+					var createQuery = @"
+                       CREATE (a:Account {
+                           Id: $A_ID,
+                           Name: $A_NAME,    
+                           Email: $A_EMAIL,   
+                           Password: $A_PASSWORD,
+                           Role_Id: 2  // Mặc định với Role_Id là 2
+                       })
+                       WITH a
+                       MATCH (r:Role {Id: a.Role_Id}) 
+                       CREATE (a)-[:HAS_ROLE]->(r) 
+                       RETURN a";
 
-                    var createParams = new
-                    {
-                        A_ID = newUserId,
-                        A_NAME = model.Name,
-                        A_EMAIL = model.Email,
-                        A_PASSWORD = hashedPassword
-                    };
+					var createParams = new
+					{
+						A_ID = newUserId,
+						A_NAME = model.Name,
+						A_EMAIL = model.Email,
+						A_PASSWORD = hashedPassword
+					};
 
-                    var queryResult = await transaction.RunAsync(createQuery, createParams);
-                    var account = await queryResult.SingleAsync(record =>
-                    {
-                        var node = record["a"].As<INode>();
-                        return new Accounts
-                        {
-                            A_ID = node.Properties["Id"].As<int>(),
-                            A_NAME = node.Properties["Name"].As<string>(),
-                            A_EMAIL = node.Properties["Email"].As<string>(),
-                            A_PASSWORD = node.Properties["Password"].As<string>(),
-                            ROLE_ID = node.Properties.ContainsKey("Role_Id") ? node.Properties["Role_Id"].As<int>() : 2
-                        };
-                    });
-
-                    return account;
-                });
-
-                return result;
-            }
-            finally
-            {
-                await session.CloseAsync();
-            }
-        }
+					var queryResult = await transaction.RunAsync(createQuery, createParams);
+					var account = await queryResult.SingleAsync(record =>
+					{
+						var node = record["a"].As<INode>();
+						return new Accounts
+						{
+							A_ID = node.Properties["Id"].As<int>(),
+							A_NAME = node.Properties["Name"].As<string>(),
+							A_EMAIL = node.Properties["Email"].As<string>(),
+							A_PASSWORD = node.Properties["Password"].As<string>(),
+							ROLE_ID = node.Properties.ContainsKey("Role_Id") ? node.Properties["Role_Id"].As<int>() : 2
+						};
+					});
 
 
-        public async Task<Accounts> LoginAsync(string email, string password)
+					return account;
+				});
+
+				return result;
+				Console.WriteLine(result);
+			}
+			finally
+			{
+				await session.CloseAsync();
+			}
+		}
+
+		public async Task<Accounts> LoginAsync(string email, string password)
         {
             var session = _driver.AsyncSession();
             try

@@ -26,7 +26,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddSession();
 builder.Services.AddSingleton<AccountService>();
-
+builder.Services.AddSingleton<DashboardService>();
+builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<RoleService>();
 builder.Services.AddScoped<UserService>();
@@ -48,15 +49,10 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
-
-
-
 builder.Services.AddSingleton<ToppingService>();
 builder.Services.AddSingleton<CartService>();
 builder.Services.AddSingleton<AddressService>();
 builder.Services.AddSingleton<OrderService>();
-
-builder.Services.AddSingleton<DashboardService>();
 
 var app = builder.Build();
 
