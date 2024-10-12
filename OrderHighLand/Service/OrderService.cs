@@ -126,5 +126,121 @@ namespace OrderHighLand.Service
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
+        public async Task<List<Orders>> GetOrdersByAccountId(int accountId)
+        {
+            string query = @"
+        MATCH (o:Order)
+        WHERE o.A_Id = $A_Id
+        RETURN o.Id AS Id, o.Date AS Date, o.Status AS Status, o.TotalPrice AS TotalPrice, o.Address_Id AS Address_Id, o.A_Id AS A_Id
+    ";
+
+            try
+            {
+                var session = _driver.AsyncSession();
+                var parameters = new Dictionary<string, object>
+        {
+            { "A_Id", accountId }
+        };
+
+                var result = await session.RunAsync(query, parameters);
+                var orders = await result.ToListAsync(record => new Orders
+                {
+                    Id = record["Id"].As<int>(),
+                    Date = DateTime.Parse(record["Date"].As<string>()),
+                    Status = record["Status"].As<string>(),
+                    TotalPrice = record["TotalPrice"].As<float>(),
+                    Address_Id = record["Address_Id"].As<int>(),
+                    A_Id = record["A_Id"].As<int>()
+                });
+
+                return orders;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return new List<Orders>();
+            }
+        }
+
+
+        public async Task<Orders> GetOrderById(int orderId)
+        {
+            string query = @"
+        MATCH (o:Order)
+        WHERE o.Id = $Order_Id
+        RETURN o.Id AS Id, o.Date AS Date, o.Status AS Status, o.TotalPrice AS TotalPrice, o.Address_Id AS Address_Id, o.A_Id AS A_Id
+    ";
+
+            try
+            {
+                var session = _driver.AsyncSession();
+                var parameters = new Dictionary<string, object> { { "Order_Id", orderId } };
+
+                var result = await session.RunAsync(query, parameters);
+                var order = await result.SingleAsync(record => new Orders
+                {
+                    Id = record["Id"].As<int>(),
+                    Date = DateTime.Parse(record["Date"].As<string>()),
+                    Status = record["Status"].As<string>(),
+                    TotalPrice = record["TotalPrice"].As<float>(),
+                    Address_Id = record["Address_Id"].As<int>(),
+                    A_Id = record["A_Id"].As<int>()
+                });
+
+                return order;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<OrderDetails>> GetOrderDetailsByOrderIdAsync(int orderId)
+        {
+            string query = @"
+        MATCH (o:Order {Id: $Order_Id})
+        MATCH (od:OrderDetail {Order_Id: $Order_Id})
+        MATCH (pv:ProductVariant {Id: od.Provar_Id})-[:VARIANT_OF]->(p:Product)
+        OPTIONAL MATCH (t:Topping) WHERE t.Id IN od.Topping_Id
+        RETURN od.Id AS OrderDetailId, od.Quantity AS Quantity, od.Price AS Price, 
+               p.Name AS ProductName, 
+               p.Image AS ProductImage,  /* Lấy hình ảnh sản phẩm */
+               collect(t.Name) AS Toppings
+    ";
+
+            try
+            {
+                using (var session = _driver.AsyncSession())
+                {
+                    var parameters = new Dictionary<string, object>
+            {
+                { "Order_Id", orderId }
+            };
+
+                    var result = await session.RunAsync(query, parameters);
+
+                    var orderDetailsList = await result.ToListAsync(record => new OrderDetails
+                    {
+                        Id = record["OrderDetailId"].As<int>(),
+                        Quantity = record["Quantity"].As<int>(),
+                        Price = record["Price"].As<float>(),
+                        ProductName = record["ProductName"].As<string>(),
+                        ProductImage = record["ProductImage"].As<string>(),  
+                        Toppings = record["Toppings"].As<List<string>>()
+                    });
+
+                    return orderDetailsList;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return new List<OrderDetails>();
+            }
+        }
+
+
+
     }
 }

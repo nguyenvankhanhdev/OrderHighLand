@@ -8,18 +8,30 @@ namespace OrderHighLand.Controllers.User
     public class AccountController : Controller
     {
         private readonly UserService _userService;
-        public AccountController(UserService userService)
+        private readonly OrderService _orderService;
+        public AccountController(UserService userService, OrderService orderService)
         {
             _userService = userService;
+            _orderService = orderService;
         }
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult Detail()
+        public async Task<IActionResult> Detail()
         {
-            return View();
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = int.Parse(userIdString);
+            var orders = await _orderService.GetOrdersByAccountId(userId);
+
+            return View(orders); 
         }
+
 
         public async Task<IActionResult> Register(Register model)
         {
@@ -87,5 +99,8 @@ namespace OrderHighLand.Controllers.User
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
+
+   
+
     }
 }

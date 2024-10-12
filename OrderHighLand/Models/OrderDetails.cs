@@ -8,5 +8,9 @@
 		public int Order_Id { get; set; }
 		public int Provar_Id { get; set; }
 		public List<int> Topping_Id { get; set; }
-	}
+
+        public string ProductName { get; set; }
+        public List<string> Toppings { get; set; }
+        public string ProductImage { get; set; }
+    }
 }
