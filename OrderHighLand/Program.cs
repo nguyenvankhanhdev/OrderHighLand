@@ -49,13 +49,10 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
-
-
 builder.Services.AddSingleton<ToppingService>();
 builder.Services.AddSingleton<CartService>();
 builder.Services.AddSingleton<AddressService>();
 builder.Services.AddSingleton<OrderService>();
-
 builder.Services.AddSingleton<DashboardService>();
 
 var app = builder.Build();
